@@ -1,0 +1,10 @@
+:host {
+    display: contents;
+}
+
+:host ::ng-deep button {
+    border-top-right-radius: 0.375rem !important;
+    border-bottom-right-radius: 0.375rem !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}

@@ -1,1 +1,20 @@
-<p>sin-permiso works!</p>
+<div class="min-vh-100 d-flex align-items-center justify-content-center px-3 bg-denied-gradient">
+    <div class="text-center p-4" style="max-width: 32rem;">
+        <h1 class="mb-0">
+            <i class="fa-solid fa-circle-exclamation text-white opacity-75"
+                style="font-size: 10rem; line-height: 1;"></i>
+        </h1>
+        <h2 class="fs-1 fw-semibold text-white opacity-75 mb-3">Acceso Denegado</h2>
+        <p class="fs-5 text-white opacity-75 mb-5">
+            No tienes los permisos necesarios para acceder a esta sección.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a (click)="regresar()" class="btn btn-glass px-4" style="cursor: pointer;">
+                Regresar
+            </a>
+            <a (click)="Salir()" class="btn btn-glass px-4" style="cursor: pointer;">
+                Salir
+            </a>
+        </div>
+    </div>
+</div>

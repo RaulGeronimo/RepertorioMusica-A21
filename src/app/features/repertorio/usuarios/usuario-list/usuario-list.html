@@ -1,1 +1,96 @@
-<p>usuario-list works!</p>
+<div class="inicio-card input-group flex-nowrap">
+    <span class="input-group-text ms-1" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
+
+    <input placeholder="Buscar" class="form-control bg-dark text-white" (keyup)="applyFilter($event)" autofocus>
+
+    <app-export-button [action]="export.bind(this)" color="success" [outline]="true" extraClass="ms-1">
+    </app-export-button>
+</div>
+
+<div class="table-view-wrapper mt-3">
+    <div class="container-scroll">
+        <div class="table-wrapper">
+            <table mat-table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="usuarioId">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+                    <td mat-cell *matCellDef="let usuario">{{ usuario.usuarioId }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="usuario">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Usuario</th>
+                    <td mat-cell *matCellDef="let usuario">{{ usuario.usuario }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="correo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Correo</th>
+                    <td mat-cell *matCellDef="let usuario">{{ usuario.correo }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="nombre">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+                    <td mat-cell *matCellDef="let usuario">{{ usuario.nombreCompleto }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="registro">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de Registro</th>
+                    <td mat-cell *matCellDef="let usuario">{{ usuario.registro | date: 'dd / MMMM / yyyy h:mm:ss a' }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fechaNacimiento">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de Nacimiento</th>
+                    <td mat-cell *matCellDef="let usuario">{{ usuario.fechaNacimiento | date: 'dd / MMMM / yyyy' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="rol">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Rol</th>
+                    <td mat-cell *matCellDef="let usuario">
+                        @if(usuario.usuarioId !== 1 && usuario.usuario !== user.usuario && puedeEditarUsuarios){
+                        <mat-form-field appearance="fill" class="tabla-select">
+                            <mat-select [(value)]="usuario.rolId" (selectionChange)="cambiarRol(usuario, $event.value)"
+                                [panelClass]="'select-panel'">
+                                @for(dato of Roles; track dato.RolId){
+                                <mat-option [value]="dato.RolId">{{ dato.Rol }}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                        }
+                        @else {
+                        <span>{{ usuario.rol }}</span>
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="edad">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Edad</th>
+                    <td mat-cell *matCellDef="let usuario">{{ usuario.edad }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="diasCumple">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Dias para cumpleaños</th>
+                    <td mat-cell *matCellDef="let usuario">{{ usuario.diasCumple }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="activo">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Activo</th>
+                    <td mat-cell *matCellDef="let usuario">
+                        <mat-slide-toggle [checked]="usuario.activo"
+                            [disabled]="usuario.usuarioId === 1 || usuario.usuario === user.usuario || !puedeEditarUsuarios"
+                            (change)="cambiarEstado(usuario, $event.checked)">
+                        </mat-slide-toggle>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            @if(dataSource.data.length === 0){
+            <p class="text-center">No hay usuarios registrados.</p>
+            }
+        </div>
+    </div>
+    <div class="paginator-container">
+        <mat-paginator [pageSize]="pageSize"></mat-paginator>
+    </div>
+</div>

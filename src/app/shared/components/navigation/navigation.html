@@ -1,1 +1,212 @@
-<p>navigation works!</p>
+<nav class="navbar sticky-top" [ngClass]="{
+      'navbar-dark bg-dark': themeService.temaActual() === 'dark',
+      'navbar-light bg-light': themeService.temaActual() === 'light'
+    }">
+    <div class="container-fluid">
+        <a class="navbar-brand" [routerLink]="['..']">
+            <img src="favicon.ico" alt="Logo" height="22" class="d-inline-block align-text-top">
+            {{proyecto.nombre}}
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar"
+            aria-controls="offcanvasDarkNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="offcanvas offcanvas-end" [class.text-bg-dark]="themeService.temaActual() === 'dark'"
+            [class.text-bg-light]="themeService.temaActual() === 'light'" tabindex="-1" id="offcanvasDarkNavbar"
+            aria-labelledby="offcanvasDarkNavbarLabel">
+            <div class="offcanvas-header custom-offcanvas-header">
+                <img src="favicon.ico" alt="Logo" width="20" height="20" class="d-inline-block align-text-top">
+                <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">{{proyecto.nombre}}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+
+            <div class="offcanvas-body d-flex flex-column">
+                <ul class="navbar-nav flex-grow-1">
+
+                    <!-- Sección principal -->
+                    @for (item of navItemsPrincipal; track $index) {
+                    <ng-container>
+                        @if(puedeVerSeccion(item.seccion)){
+                        <ng-container>
+
+                            <!-- Link simple -->
+                            @if(esLink(item)){
+                            <li class="nav-item">
+                                <a class="nav-link" routerLinkActive="active" [routerLink]="item.routerLink"
+                                    [routerLinkActiveOptions]="{exact: true}">
+                                    {{ item.nombre }}
+                                </a>
+                            </li>
+                            }
+
+                            <!-- Varios links planos en el mismo li -->
+                            @if(esMulti(item)){
+                            <li class="nav-item">
+                                @for (link of item.links; track $index) {
+                                <ng-container>
+                                    @if(puedeVerSeccion(link.seccion)){
+                                    <a class="nav-link" routerLinkActive="active"
+                                        [routerLinkActiveOptions]="{exact: true}" [routerLink]="link.routerLink">
+                                        {{ link.nombre }}
+                                    </a>
+                                    }
+
+                                </ng-container>
+                                }
+                            </li>
+                            }
+
+                            <!-- Dropdown con sub-items -->
+                            @if(esDropdown(item)){
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    {{ item.nombre }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    @for (sub of item.items; track $index) {
+                                    <ng-container>
+
+                                        @if(puedeVerSubItem(sub)){
+                                        <li>
+                                            @if(sub.divisorAntes){
+                                            <hr class="dropdown-divider">
+                                            }
+
+                                            <a class="dropdown-item" routerLinkActive="active"
+                                                [routerLink]="sub.routerLink" [routerLinkActiveOptions]="{exact: true}">
+                                                {{ sub.nombre }}
+                                            </a>
+                                        </li>
+                                        }
+
+                                    </ng-container>
+                                    }
+                                </ul>
+                            </li>
+                            }
+
+                        </ng-container>
+                        }
+
+                    </ng-container>
+                    }
+
+                    <!-- Separador antes de Auditoria / Usuarios / Otros Proyectos -->
+                    @if(puedeVerBitacora|| puedeVerUsuarios){
+                    <hr class="hr hr-blurry" />
+                    }
+
+                    <!-- Sección de auditoria: Bitácora, Usuarios -->
+                    @for (item of navItemsAuditoria; track $index) {
+                    <ng-container>
+                        @if(puedeVerSeccion(item.seccion)){
+                        <ng-container>
+
+                            <!-- Link simple -->
+                            @if(esLink(item)){
+                            <li class="nav-item">
+                                <a class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                                    [routerLink]="item.routerLink">
+                                    {{item.nombre }}
+                                </a>
+                            </li>
+                            }
+
+                            <!-- Dropdown con sub-items -->
+                            @if(esDropdown(item)){
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    {{ item.nombre }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    @for (sub of item.items; track $index) {
+                                    <ng-container>
+                                        @if(puedeVerSubItem(sub)){
+                                        <li>
+                                            @if(sub.divisorAntes){
+                                            <hr class="dropdown-divider">
+                                            }
+                                            <a class="dropdown-item" routerLinkActive="active"
+                                                [routerLinkActiveOptions]="{exact: true}" [routerLink]="sub.routerLink">
+                                                {{ sub.nombre }}
+                                            </a>
+                                        </li>
+                                        }
+
+                                    </ng-container>
+                                    }
+                                </ul>
+                            </li>
+                            }
+
+                        </ng-container>
+                        }
+
+                    </ng-container>
+                    }
+
+
+                    <!-- Otros Proyectos -->
+                    @if(puedeVerOtrosProyectos){
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Otros Proyectos
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            @for (item of otrosProyectosFiltrados; track $index) {
+                            <li>
+                                <a class="dropdown-item" [href]="item.url" target="_blank">
+                                    {{ item.nombre }}
+                                </a>
+                            </li>
+                            }
+                        </ul>
+                    </li>
+                    }
+
+                    <!-- Cerrar Sesion -->
+                    <hr class="hr hr-blurry">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user-circle me-2"></i>
+                            {{user.usuario}}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" [routerLink]="['profile']">
+                                    <i class="fa-solid fa-id-card me-2"></i> Perfil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center logout-item" (click)="Salir()">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="mt-auto px-3 pb-3">
+                <button class="btn btn-outline-secondary w-100" (click)="themeService.toggleTema()">
+
+                    @if (themeService.temaActual() === 'dark') {
+                    <i class="fa-solid fa-sun me-2"></i>
+                    Tema Claro
+                    } @else {
+                    <i class="fa-solid fa-moon me-2"></i>
+                    Tema Oscuro
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>

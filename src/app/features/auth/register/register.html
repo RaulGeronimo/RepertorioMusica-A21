@@ -1,1 +1,141 @@
-<p>register works!</p>
+<div
+    class="d-flex flex-column align-items-center justify-content-center px-3 py-5 mx-auto vh-100 overflow-y-auto bg-body-secondary">
+    <div class="card w-100 shadow-lg" style="max-width: 36rem;">
+        <div class="card-body p-4 p-sm-5">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">Registrar usuario</h2>
+                <p class="text-muted small mt-1">¡Por favor, introduce todos los datos solicitados!</p>
+            </div>
+
+            <form class="mt-4" [formGroup]="form" (ngSubmit)="add()">
+
+                <!-- Nombre -->
+                <div class="mb-3">
+                    <label for="nombre" class="form-label small fw-medium">Nombre(s)</label>
+                    <input type="text" id="nombre" formControlName="nombre" placeholder="Nombre(s)" class="form-control"
+                        [ngClass]="getValidationClasses('nombre')" />
+                    @if(getError('nombre')){
+                    <div class="invalid-feedback d-block">
+                        {{ getError('nombre') }}
+                    </div>
+                    }
+                </div>
+
+                <!-- Apellidos -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="apellidoPaterno" class="form-label small fw-medium">Apellido Paterno</label>
+                        <input type="text" id="apellidoPaterno" formControlName="apellidoPaterno"
+                            placeholder="Apellido Paterno" class="form-control"
+                            [ngClass]="getValidationClasses('apellidoPaterno')" />
+                        @if(getError('apellidoPaterno')){
+                        <div class="invalid-feedback d-block">
+                            {{ getError('apellidoPaterno') }}
+                        </div>
+                        }
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="apellidoMaterno" class="form-label small fw-medium">Apellido Materno</label>
+                        <input type="text" id="apellidoMaterno" formControlName="apellidoMaterno"
+                            placeholder="Apellido Materno" class="form-control"
+                            [ngClass]="getValidationClasses('apellidoMaterno')" />
+                        @if(getError('apellidoMaterno')){
+                        <div class="invalid-feedback d-block">
+                            {{ getError('apellidoMaterno') }}
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Fecha Nacimiento -->
+                <div class="mb-3">
+                    <label for="fechaNacimiento" class="form-label small fw-medium">Fecha Nacimiento</label>
+                    <input type="date" id="fechaNacimiento" formControlName="fechaNacimiento" max="9999-12-31"
+                        class="form-control" [ngClass]="getValidationClasses('fechaNacimiento')" />
+                    @if(getError('fechaNacimiento')){
+                    <div class="invalid-feedback d-block">
+                        {{ getError('fechaNacimiento') }}
+                    </div>
+                    }
+                </div>
+
+                <!-- usuario / correo -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="usuario" class="form-label small fw-medium">Usuario</label>
+                        <input type="text" id="usuario" formControlName="usuario" placeholder="Nombre de Usuario"
+                            class="form-control" [ngClass]="getValidationClasses('usuario')" autocomplete="off" />
+                        @if(getError('usuario')){
+                        <div class="invalid-feedback d-block">
+                            {{ getError('usuario') }}
+                        </div>
+                        }
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="correo" class="form-label small fw-medium">Correo</label>
+                        <input type="text" id="correo" formControlName="correo" placeholder="Correo Electrónico"
+                            class="form-control" [ngClass]="getValidationClasses('correo')" />
+                        @if(getError('correo')){
+                        <div class="invalid-feedback d-block">
+                            {{ getError('correo') }}
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label small fw-medium">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent"><i class="fas fa-lock opacity-50"></i></span>
+                        <input [type]="fieldTextType.password1 ? 'text' : 'password'" id="password"
+                            formControlName="password" placeholder="Ingresa nueva contraseña" class="form-control"
+                            [ngClass]="getValidationClasses('password')" autocomplete="new-password" />
+                        <span class="input-group-text bg-transparent" style="cursor: pointer;"
+                            (click)="toggleFieldTextType('password1')">
+                            <i class="fas" [ngClass]="fieldTextType.password1 ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </span>
+                    </div>
+                    @if(getError('password')){
+                    <div class="text-danger small mt-1">
+                        {{ getError('password') }}
+                    </div>
+                    }
+                </div>
+
+                <!-- Confirmar password -->
+                <div class="mb-3">
+                    <label for="password2" class="form-label small fw-medium">Confirmar Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent">
+                            <i class="fas fa-lock opacity-50"></i>
+                        </span>
+                        <input [type]="fieldTextType.password2 ? 'text' : 'password'" id="password2"
+                            formControlName="password2" placeholder="Confirma la contraseña" class="form-control"
+                            [ngClass]="getValidationClasses('password2', form.hasError('mismatch'))" />
+                        <span class="input-group-text bg-transparent" style="cursor: pointer;"
+                            (click)="toggleFieldTextType('password2')">
+                            <i class="fas" [ngClass]="fieldTextType.password2 ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </span>
+                    </div>
+                    @if(getPassword2Error()){
+                    <span class="d-block text-danger small mt-1">
+                        {{ getPassword2Error() }}
+                    </span>
+                    }
+                </div>
+
+                <!-- Botones -->
+                <div class="d-flex gap-2">
+                    <button type="submit" [disabled]="form.invalid" class="btn btn-outline-success w-50">
+                        Aceptar
+                    </button>
+                    <a [routerLink]="['/login']" class="btn btn-outline-info w-50">Regresar</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,1 +1,9 @@
-<p>dashboard works!</p>
+<main class="d-flex flex-column vh-100 overflow-hidden">
+    <app-navigation></app-navigation>
+
+    <div class="dashboard-content container mx-auto p-3 flex-grow-1 d-flex flex-column overflow-hidden">
+        <router-outlet></router-outlet>
+    </div>
+
+    <!-- <app-footer></app-footer> -->
+</main>

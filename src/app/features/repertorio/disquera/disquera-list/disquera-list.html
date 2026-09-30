@@ -1,1 +1,163 @@
-<p>disquera-list works!</p>
+<div class="inicio-card input-group flex-nowrap">
+    @if(puedeCrearDisquera){
+    <a class="btn btn-primary" [routerLink]="['agregar']">Agregar</a>
+    }
+
+    <span class="input-group-text ms-1" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
+
+    @if(tabla){
+    <input placeholder="Buscar" class="form-control bg-dark text-white" (keyup)="applyFilter($event)" autofocus>
+    <a type="button" class="btn btn-secondary" (click)="cambiarVista()">
+        <i class="fa-solid fa-table"></i>
+    </a>
+    }
+    @else {
+    <input type="text" class="form-control bg-dark text-white" placeholder="Buscar" [(ngModel)]="search" autofocus>
+
+    <a type="button" class="btn btn-secondary" (click)="cambiarVista()">
+        <i class="fa-solid fa-list"></i>
+    </a>
+    }
+
+    <app-export-button [action]="export.bind(this)" color="success" [outline]="true" extraClass="ms-1">
+    </app-export-button>
+</div>
+
+@if(!tabla){
+<label class="text-white mt-2 text-end">Total: {{ (disqueras | customGlobalFilter:search).length }} registros</label>
+}
+
+<div class="container-scroll" [hidden]="tabla">
+    <div class="row mt-2">
+        @for (dato of disqueras | customGlobalFilter:search; track dato.disqueraId){
+        <div class="col-md-4" style="margin-bottom: 1.5rem;">
+            <div class="card text-center">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    {{dato.nombre}}
+
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        @if(puedeEliminarDisquera){
+                        <button class="btn btn-danger" (click)="borrar(dato.disqueraId)">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                        }
+
+                        @if(show){
+                        <button class="btn btn-primary" (click)="show = !show">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </button>
+                        }
+
+                        @else{
+                        <a class="btn btn-primary" (click)="show = !show">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </a>
+                        }
+
+                    </div>
+                </div>
+                <div class="box">
+                    <img [src]="dato.logo == '' ? '/images/noImagen.png' : dato.logo " alt="Imagen de la Disquera"
+                        appImages loading="lazy">
+                </div>
+
+                @if(show){
+                <div class="card-body">
+                    <p style="font-weight: bold;">Fundacion</p>
+                    <p>{{dato.fundacion | date: 'MMMM / yyyy'}}</p>
+                    <p style="font-weight: bold;">Fundadores</p>
+                    <p>{{dato.fundador}}</p>
+                    <p style="font-weight: bold;">Generos</p>
+                    <p>{{dato.generos}}</p>
+                    <p style="font-weight: bold;">Pais</p>
+                    <p>{{dato.pais}}</p>
+
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        @if(puedeEditarDisquera){
+                        <a [routerLink]="['actualizar', dato.disqueraId]" class="btn btn-info btn-block">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                        }
+                    </div>
+                </div>
+                }
+
+            </div>
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Tabla -->
+<div class="table-view-wrapper mt-3" [hidden]="!tabla">
+    <div class="container-scroll">
+        <div class="table-wrapper">
+            <table mat-table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="disqueraId">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+                    <td mat-cell *matCellDef="let dato">{{ dato.disqueraId }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="nombre">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+                    <td mat-cell *matCellDef="let dato">{{ dato.nombre }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="fundacion">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Fundación</th>
+                    <td mat-cell *matCellDef="let dato">{{ dato.fundacion | date: 'MMMM / yyyy' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="fundador">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Fundador</th>
+                    <td mat-cell *matCellDef="let dato">{{ dato.fundador }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="generos">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Géneros</th>
+                    <td mat-cell *matCellDef="let dato">{{ dato.generos }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="pais">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>País</th>
+                    <td mat-cell *matCellDef="let dato">{{ dato.pais }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="estatus">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Estatus</th>
+                    <td mat-cell *matCellDef="let dato">{{ dato.estatus }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <td mat-cell *matCellDef="let dato">
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            @if(puedeEditarDisquera){
+                            <a [routerLink]="['actualizar', dato.disqueraId]" class="btn btn-info btn-block">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            }
+
+                            @if(puedeEliminarDisquera){
+                            <button class="btn btn-danger" (click)="borrar(dato.disqueraId)">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                            }
+
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            @if(dataSource.data.length === 0){
+            <p class="text-center">No hay disqueras registrados.</p>
+            }
+        </div>
+    </div>
+    <div class="paginator-container">
+        <mat-paginator [pageSize]="pageSize"></mat-paginator>
+    </div>
+</div>

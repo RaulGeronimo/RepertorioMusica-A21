@@ -1,1 +1,175 @@
-/* You can add global styles to this file, and also import other style files */
+html {
+    background-image: url('/images/Fondo.jpg');
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: transparent;
+}
+
+app-root {
+    display: block;
+    min-height: 100vh;
+}
+
+.dashboard-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.dashboard-content>router-outlet+* {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.inicio-card,
+label {
+    flex-shrink: 0;
+}
+
+.container-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.2);
+}
+
+.container-scroll::-webkit-scrollbar {
+    width: 10px;
+}
+
+.container-scroll::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.container-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.container-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.table-view-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.paginator-container {
+    flex-shrink: 0;
+}
+
+.form-control.bg-dark {
+    --bs-secondary-color: rgba(255, 255, 255, 0.6);
+}
+
+.table-wrapper {
+    height: 100%;
+    overflow-x: auto;
+}
+
+.table-wrapper-detalle {
+    overflow-x: auto;
+}
+
+.mat-mdc-header-row {
+    background-color: #323f4d;
+}
+
+.mat-mdc-header-cell {
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.mat-mdc-cell {
+    white-space: nowrap;
+}
+
+.mat-mdc-row:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.mat-mdc-row:nth-child(odd) {
+    background-color: transparent;
+}
+
+.mat-mdc-table .mat-mdc-header-row {
+    background-color: #323f4d;
+}
+
+.mat-mdc-table .mat-mdc-header-cell {
+    background-color: #323f4d;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+form .form-control {
+    background-color: #fff !important;
+    color: #212529 !important;
+}
+
+form .form-control:focus {
+    background-color: #fff !important;
+    color: #212529 !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+form .form-control::placeholder {
+    color: #6c757d;
+    opacity: 1;
+}
+
+form .form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+form .form-control.is-valid {
+    border-color: #198754;
+}
+
+form .form-control[type="date"],
+form .form-control[type="time"],
+form .form-control[type="datetime-local"],
+form .form-control[type="month"],
+form .form-control[type="week"] {
+    color-scheme: light;
+}
+
+.sticky-preview {
+    position: sticky;
+    top: 1rem;
+}

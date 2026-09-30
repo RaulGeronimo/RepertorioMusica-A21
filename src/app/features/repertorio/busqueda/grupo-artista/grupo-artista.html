@@ -1,1 +1,313 @@
-<p>grupo-artista works!</p>
+<div class="inicio-card input-group flex-nowrap">
+    @if(puedeCrearCancion||puedeCrearAlbum||puedeCrearCancionAlbum||puedeCrearArtistaGrupo){
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Agregar
+        </button>
+        <ul class="dropdown-menu">
+            @if(puedeCrearCancion){
+            <li>
+                <a class="dropdown-item" type="button" [routerLink]="['/repertorio/cancion/agregar']">Canción</a>
+            </li>
+            }
+
+            @if(puedeCrearAlbum){
+            <li>
+                <a class="dropdown-item" type="button" [routerLink]="['/repertorio/album/agregar']">Álbum</a>
+            </li>
+            }
+
+            @if(puedeCrearCancionAlbum){
+            <li>
+                <a class="dropdown-item" type="button" [routerLink]="['/repertorio/cancionesAlbum/agregar']">
+                    Pista de Álbum
+                </a>
+            </li>
+            }
+
+            @if(puedeCrearArtistaGrupo){
+            <li>
+                <a class="dropdown-item" type="button" [routerLink]="['/repertorio/artistaGrupo/agregar']">
+                    Integrante de Grupo
+                </a>
+            </li>
+            }
+        </ul>
+    </div>
+    }
+
+    <button class="btn btn-dark ms-1 rounded" (click)="regresar()">Regresar</button>
+
+    <span class="input-group-text ms-1" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
+
+    @if(tabla){
+    <input placeholder="Buscar" class="form-control bg-dark text-white" (keyup)="applyFilter($event)" autofocus>
+    <a type="button" class="btn btn-secondary" (click)="cambiarVista()">
+        <i class="fa-solid fa-table"></i>
+    </a>
+    }
+    @else {
+    <input type="text" class="form-control bg-dark text-white" placeholder="Buscar" [(ngModel)]="search" autofocus>
+
+    <a type="button" class="btn btn-secondary" (click)="cambiarVista()">
+        <i class="fa-solid fa-list"></i>
+    </a>
+    }
+
+    <app-export-button [action]="export.bind(this)" color="success" [outline]="true" extraClass="ms-1">
+    </app-export-button>
+</div>
+
+<div class="container-scroll mt-4 d-flex flex-column">
+    <!-- Datos del Grupo -->
+    @if(grupo){
+    <div class="row y-3 flex-shrink-0">
+        <div class="col-md-5">
+            <div class="card card-body text-center bg-dark">
+                <div class="box">
+                    <img class="grupo" [src]="grupo.logo == '' ? '/images/noImagen.png' : grupo.logo "
+                        alt="Imagen del Álbum" appImages>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7 margen">
+            <div class="card text-center">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="text-uppercase">{{grupo.nombre}}</span>
+
+                    @if(puedeVerCancion||puedeVerAlbum||puedeVerArtistaGrupo){
+                    <div class="btn-group" role="group" aria-label="Accesos del grupo">
+                        @if(puedeVerCancion){
+                        <a [routerLink]="['/repertorio/buscar/grupo/cancion', grupo.grupoId]" class="btn btn-success">
+                            <i class="fa-solid fa-music"></i>
+                        </a>
+                        }
+
+                        @if(puedeVerAlbum){
+                        <a [routerLink]="['/repertorio/buscar/grupo/album', grupo.grupoId]" class="btn btn-warning">
+                            <i class="fa-sharp fa-solid fa-compact-disc"></i>
+                        </a>
+                        }
+
+                        @if(puedeVerArtistaGrupo){
+                        <a [routerLink]="['/repertorio/buscar/grupo/integrante', grupo.grupoId]" class="btn btn-danger">
+                            <i class="fa-solid fa-user"></i>
+                        </a>
+                        }
+                    </div>
+                    }
+
+                </div>
+                <div class="card-body">
+                    <p class="card-text"><strong>Álbumes:</strong> {{grupo.albumes}}</p>
+                    <p class="card-text"><strong>Canciones:</strong> {{grupo.canciones}}</p>
+                    <p class="card-text"><strong>Estado:</strong> {{grupo.estatus}}</p>
+
+                    <p class="card-text mb-1"><strong>Origen</strong></p>
+                    <p class="card-text">{{grupo.origen}}</p>
+
+                    <p class="card-text mb-1"><strong>Género</strong></p>
+                    <p class="card-text">{{grupo.genero}}</p>
+
+                    <p class="card-text mb-1"><strong>Sellos Discográficos</strong></p>
+                    <p class="card-text">{{grupo.sellos}}</p>
+
+                    <p class="card-text mb-1"><strong>Sitio Web</strong></p>
+                    <p class="card-text"><a href="{{grupo.sitioWeb}}" target="_blank">{{grupo.sitioWeb}}</a></p>
+
+                    @if(puedeEditarGrupo){
+                    <a [routerLink]="['/repertorio/grupo/actualizar', grupo.grupoId]" class="btn btn-primary">
+                        Editar Grupo
+                    </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+
+    <div class="row mt-4" [hidden]="tabla">
+        @for (dato of artistas | customGlobalFilter:search; track dato.artistaGrupoId){
+        <div class="col-md-4" style="margin-bottom: 1.5rem;">
+            <div class="card text-center">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    {{dato.nombreArtistico}}
+
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        @if(puedeEliminarArtistaGrupo){
+                        <button class="btn btn-danger" (click)="borrar(dato.artistaGrupoId)">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                        }
+
+                        @if(show){
+                        <button class="btn btn-primary" (click)="show = !show">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </button>
+                        }
+
+                        @else{
+                        <a class="btn btn-primary" (click)="show = !show">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </a>
+                        }
+
+                    </div>
+                </div>
+                <div class="box">
+                    <img [src]="dato.foto == '' ? '/images/noImagen.png' : dato.foto " alt="Imagen del Artista"
+                        appImages loading="lazy">
+                </div>
+
+                @if(show){
+                <div class="card-body">
+                    <p style="font-weight: bold;">Grupo</p>
+                    <p>{{dato.grupo}}</p>
+                    <p style="font-weight: bold;">Periodo</p>
+                    <p>{{dato.periodo}}</p>
+                    <p style="font-weight: bold;">Fecha Nacimiento</p>
+                    <p>{{dato.fechaNacimiento | date: 'dd / MMMM / yyyy'}}</p>
+                    <p style="font-weight: bold;">Edad</p>
+                    <p>{{dato.edad}}</p>
+                    <p style="font-weight: bold;">Instrumentos que toca</p>
+                    <p>{{dato.instrumentos}}</p>
+                    <p style="font-weight: bold;">Tipo Voz</p>
+                    <p>{{dato.tipoVoz}}</p>
+                    <p style="font-weight: bold;">Nacionalidad</p>
+                    <p>{{dato.pais}}</p>
+
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        @if(puedeEditarArtistaGrupo){
+                        <a [routerLink]="['actualizar', dato.artistaGrupoId]" class="btn btn-info btn-block">
+                            Editar
+                        </a>
+                        }
+
+                        @if(puedeCrearInstrumentoArtistaGrupo){
+                        <a [routerLink]="['/repertorio/instrumentoArtista','agregar']"
+                            class="btn btn-secondary btn-block">
+                            Agregar Instrumento
+                        </a>
+                        }
+                    </div>
+                </div>
+                }
+
+            </div>
+        </div>
+        }
+    </div>
+
+    <div class="table-view-wrapper mt-4" [hidden]="!tabla">
+        <div class="container-scroll">
+            <div class="table-wrapper">
+                <table mat-table [dataSource]="dataSource" matSort>
+                    <ng-container matColumnDef="artistaGrupoId">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.artistaGrupoId }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="nombre">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.nombre }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="nombreArtistico">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre Artistico</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.nombreArtistico }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="grupo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Grupo</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.grupo }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="periodo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Periodo</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.periodo }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="genero">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Género</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.genero }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fechaNacimiento">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha Nacimiento</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.fechaNacimiento | date: 'dd / MMMM / yyyy' }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fechaFinado">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Finado</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.fechaFinado | date: 'dd / MMMM / yyyy' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="edad">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Edad</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.edad }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="estatura">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Estatura</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.estatura }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="pais">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>País</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.pais }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="instrumentos">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Instrumentos</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.instrumentos }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="tipoVoz">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo Voz</th>
+                        <td mat-cell *matCellDef="let dato">{{ dato.tipoVoz }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                        <td mat-cell *matCellDef="let dato">
+                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                @if(puedeEditarArtistaGrupo){
+                                <a [routerLink]="['/repertorio/artistaGrupo/actualizar', dato.artistaGrupoId]"
+                                    class="btn btn-info btn-block"><i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                }
+
+                                @if(puedeEliminarArtistaGrupo){
+                                <button class="btn btn-danger" (click)="borrar(dato.artistaGrupoId)">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                                }
+
+                                @if(puedeCrearInstrumentoArtistaGrupo){
+                                <a [routerLink]="['/repertorio/instrumentoArtista','agregar']"
+                                    class="btn btn-secondary btn-block">
+                                    <i class="fa-solid fa-guitar"></i>
+                                </a>
+                                }
+
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+                @if(dataSource.data.length === 0){
+                <p class="text-center">No hay artistas registrados.</p>
+                }
+            </div>
+        </div>
+
+        <div class="paginator-container mt-2">
+            <mat-paginator [pageSize]="pageSize"></mat-paginator>
+        </div>
+    </div>
+</div>

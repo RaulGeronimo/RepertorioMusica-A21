@@ -1,1 +1,67 @@
-<p>login works!</p>
+<div
+    class="d-flex flex-column align-items-center justify-content-center px-3 pt-4 mx-auto vh-100 overflow-y-auto bg-body-secondary">
+    <div class="d-flex align-items-center justify-content-center mb-4 mb-lg-5 fs-4 fw-semibold">
+        <img src="favicon.ico" class="me-3" height="44" alt="Logo">
+        <span class="text-body-secondary">Repertorio</span>
+    </div>
+
+    <!-- Card -->
+    <div class="card w-100 shadow-lg" style="max-width: 36rem;">
+        <div class="card-body p-4 p-sm-5">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">Iniciar Sesión</h2>
+                <p class="text-muted small mt-1">¡Por favor, introduce tu usuario y contraseña!</p>
+            </div>
+
+            <form class="mt-4" [formGroup]="form" (ngSubmit)="iniciarSesion()">
+                <!-- Email / Usuario -->
+                <div class="mb-3">
+                    <label for="email" class="form-label small fw-medium">Email o Usuario</label>
+                    <input type="email" id="email" formControlName="usuario" placeholder="Email o Usuario"
+                        class="form-control" [ngClass]="getValidationClasses('usuario')" />
+                    @if(getError('usuario')){
+                    <div class="invalid-feedback d-block">
+                        {{ getError('usuario') }}
+                    </div>
+                    }
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label small fw-medium">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent">
+                            <i class="fas fa-lock opacity-50"></i>
+                        </span>
+                        <input [type]="fieldTextType ? 'text' : 'password'" id="password" formControlName="password"
+                            placeholder="Ingresa nueva contraseña" class="form-control"
+                            [ngClass]="getValidationClasses('password')" />
+                        <span class="input-group-text bg-transparent" style="cursor: pointer;"
+                            (click)="toggleFieldTextType()">
+                            <i class="fas" [ngClass]="fieldTextType ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </span>
+                    </div>
+                    @if(getError('password')){
+                    <div class="invalid-feedback d-block">
+                        {{ getError('password') }}
+                    </div>
+                    }
+                </div>
+
+                <!-- Registrar + Olvidaste tu contraseña -->
+                <div class="d-flex align-items-center justify-content-between small text-muted fw-medium mb-3">
+                    <span>
+                        ¿No tienes cuenta? <a routerLink="/register" class="link-primary">Registrar</a>
+                    </span>
+                    <a [routerLink]="['/reset']" class="link-primary">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                </div>
+
+                <button type="submit" [disabled]="form.invalid" class="btn btn-outline-success w-100">
+                    Aceptar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

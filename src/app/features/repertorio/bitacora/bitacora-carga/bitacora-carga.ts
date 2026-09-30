@@ -1,4 +1,12 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { BitacoraCargaResponse } from '@core/models/bitacora';
+import { AlertasService } from '@core/services/alertas.service';
+import { BitacoraService } from '@core/services/bitacora.service';
+import { ReportesService } from '@core/services/reportes.service';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-bitacora-carga',
@@ -6,4 +14,86 @@ import { Component } from '@angular/core';
   templateUrl: './bitacora-carga.html',
   styleUrl: './bitacora-carga.css',
 })
-export class BitacoraCarga {}
+export class BitacoraCarga implements OnInit, AfterViewInit {
+  pageSize: number = environment.registrosPagina;
+  Archivo: string = 'Bitacora Carga';
+
+  displayedColumns: string[] = [
+    'bitacoraCargaId',
+    'tabla',
+    'nombre',
+    'usuario',
+    'modificado',
+    'proceso',
+    'registroId',
+  ];
+
+  dataSource = new MatTableDataSource<BitacoraCargaResponse>();
+  Bitacora: BitacoraCargaResponse[] = [];
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(
+    private service: BitacoraService,
+    private alerta: AlertasService,
+    private reportes: ReportesService,
+  ) {}
+
+  ngOnInit(): void {
+    this.obtenerDatos();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+
+    setTimeout(() => {
+      this.sort.active = 'bitacoraCargaId';
+      this.sort.direction = 'desc';
+
+      this.sort.sortChange.emit({
+        active: this.sort.active,
+        direction: this.sort.direction,
+      });
+    });
+  }
+
+  obtenerDatos() {
+    this.obtenerLista();
+  }
+
+  obtenerLista() {
+    this.service.getBitacoraCarga().subscribe({
+      next: (res) => {
+        if (res != null) {
+          this.Bitacora = res;
+          this.dataSource.data = this.Bitacora;
+        } else {
+          this.Bitacora = [];
+          this.alerta.SinResultados();
+        }
+      },
+      error: (err: unknown) => {
+        console.error(err);
+        this.alerta.errorServidor();
+      },
+    });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  export() {
+    this.alerta.reporte(this.Archivo);
+    this.service.exportarExcelCarga().subscribe((blob) => {
+      this.reportes.descargarExcel(blob, this.Archivo);
+    });
+  }
+}
