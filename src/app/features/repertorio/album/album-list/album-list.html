@@ -49,7 +49,7 @@
 <div class="container-scroll" [hidden]="tabla">
     <div class="row mt-2">
         @for (dato of albumes | customGlobalFilter:search; track dato.albumId){
-        <div class="col-md-4" style="margin-bottom: 1.5rem;">
+        <div class="col-md-4 mb-4">
             <div class="card text-center">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     {{dato.nombre}}
@@ -89,15 +89,15 @@
 
                 @if(show){
                 <div class="card-body">
-                    <p style="font-weight: bold;">Grupo</p>
+                    <p class="fw-bold">Grupo</p>
                     <p>{{dato.grupo}}</p>
-                    <p style="font-weight: bold;">Canciones</p>
+                    <p class="fw-bold">Canciones</p>
                     <p>{{dato.canciones}}</p>
-                    <p style="font-weight: bold;">Duración</p>
+                    <p class="fw-bold">Duración</p>
                     <p>{{dato.duracion}}</p>
-                    <p style="font-weight: bold;">Lanzamiento</p>
+                    <p class="fw-bold">Lanzamiento</p>
                     <p>{{dato.lanzamiento | date: 'dd / MMMM / yyyy'}}</p>
-                    <p style="font-weight: bold;">Disquera</p>
+                    <p class="fw-bold">Disquera</p>
                     <p>{{dato.disquera}}</p>
 
                     <div class="btn-group" role="group" aria-label="Basic mixed styles example">

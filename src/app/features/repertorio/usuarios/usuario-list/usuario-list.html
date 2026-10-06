@@ -49,7 +49,7 @@
                         <mat-form-field appearance="fill" class="tabla-select">
                             <mat-select [(value)]="usuario.rolId" (selectionChange)="cambiarRol(usuario, $event.value)"
                                 [panelClass]="'select-panel'">
-                                @for(dato of Roles; track dato.RolId){
+                                @for(dato of roles; track dato.RolId){
                                 <mat-option [value]="dato.RolId">{{ dato.Rol }}</mat-option>
                                 }
                             </mat-select>

@@ -19,7 +19,7 @@ import { ArtistaResponse } from '@shared/models/artista';
 })
 export class ArtistaList implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Artistas';
+  archivo: string = 'Artistas';
   displayedColumns: string[] = [
     'artistaId',
     'nombre',
@@ -74,7 +74,9 @@ export class ArtistaList implements OnInit, AfterViewInit {
 
   obtenerPermiso() {
     this.puedeCrearArtista = this.permiso.puedeCrear(Seccion.Artista);
-    this.puedeCrearInstrumentoArtistaGrupo = this.permiso.puedeCrear(Seccion.InstrumentoArtistaGrupo);
+    this.puedeCrearInstrumentoArtistaGrupo = this.permiso.puedeCrear(
+      Seccion.InstrumentoArtistaGrupo,
+    );
 
     this.puedeEditarArtista = this.permiso.puedeEditar(Seccion.Artista);
 
@@ -128,9 +130,9 @@ export class ArtistaList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }

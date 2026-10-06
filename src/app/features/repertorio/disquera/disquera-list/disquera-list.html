@@ -30,7 +30,7 @@
 <div class="container-scroll" [hidden]="tabla">
     <div class="row mt-2">
         @for (dato of disqueras | customGlobalFilter:search; track dato.disqueraId){
-        <div class="col-md-4" style="margin-bottom: 1.5rem;">
+        <div class="col-md-4 mb-4">
             <div class="card text-center">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     {{dato.nombre}}
@@ -63,13 +63,13 @@
 
                 @if(show){
                 <div class="card-body">
-                    <p style="font-weight: bold;">Fundacion</p>
+                    <p class="fw-bold">Fundacion</p>
                     <p>{{dato.fundacion | date: 'MMMM / yyyy'}}</p>
-                    <p style="font-weight: bold;">Fundadores</p>
+                    <p class="fw-bold">Fundadores</p>
                     <p>{{dato.fundador}}</p>
-                    <p style="font-weight: bold;">Generos</p>
+                    <p class="fw-bold">Generos</p>
                     <p>{{dato.generos}}</p>
-                    <p style="font-weight: bold;">Pais</p>
+                    <p class="fw-bold">Pais</p>
                     <p>{{dato.pais}}</p>
 
                     <div class="btn-group" role="group" aria-label="Basic mixed styles example">

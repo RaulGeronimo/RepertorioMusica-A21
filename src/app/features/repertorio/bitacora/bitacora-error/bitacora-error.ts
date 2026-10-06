@@ -16,7 +16,7 @@ import { environment } from '@environments/environment';
 })
 export class BitacoraError implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Bitacora Error';
+  archivo: string = 'Bitacora Error';
 
   displayedColumns: string[] = [
     'bitacoraErrorId',
@@ -28,7 +28,7 @@ export class BitacoraError implements OnInit, AfterViewInit {
   ];
 
   dataSource = new MatTableDataSource<BitacoraErrorResponse>();
-  Bitacora: BitacoraErrorResponse[] = [];
+  bitacora: BitacoraErrorResponse[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -66,10 +66,10 @@ export class BitacoraError implements OnInit, AfterViewInit {
     this.service.getBitacoraError().subscribe({
       next: (res) => {
         if (res != null) {
-          this.Bitacora = res;
-          this.dataSource.data = this.Bitacora;
+          this.bitacora = res;
+          this.dataSource.data = this.bitacora;
         } else {
-          this.Bitacora = [];
+          this.bitacora = [];
           this.alerta.SinResultados();
         }
       },
@@ -90,9 +90,9 @@ export class BitacoraError implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcelError().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }

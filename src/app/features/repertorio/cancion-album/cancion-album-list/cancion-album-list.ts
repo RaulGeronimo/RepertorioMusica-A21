@@ -19,7 +19,7 @@ import { CancionAlbumResponse } from '@shared/models/cancion-album';
 })
 export class CancionAlbumList implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Canciones';
+  archivo: string = 'Canciones';
   displayedColumns: string[] = [
     'cancionAlbumId',
     'cancion',
@@ -112,9 +112,9 @@ export class CancionAlbumList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }

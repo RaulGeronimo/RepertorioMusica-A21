@@ -1,1 +1,181 @@
-<p>grupo-form works!</p>
+<div class="container-scroll">
+    <div class="row mt-2">
+        <div class="col-md-8 mb-3 mb-md-0">
+            <div class="card">
+                <div class="card-body form-scroll">
+                    <form [formGroup]="form" (ngSubmit)="edit ? actualiza() : add()">
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label small fw-medium">Nombre</label>
+                            <input type="text" id="nombre" formControlName="nombre" placeholder="Nombre del Grupo:"
+                                class="form-control" [ngClass]="getValidationClasses('nombre')">
+                            @if(getError('nombre')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('nombre') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Origen -->
+                        <div class="mb-3">
+                            <label for="origen" class="form-label small fw-medium">Origen</label>
+                            <input type="text" id="origen" formControlName="origen" placeholder="Origen del Grupo:"
+                                class="form-control" [ngClass]="getValidationClasses('origen')">
+                            @if(getError('origen')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('origen') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Género -->
+                        <div class="mb-3">
+                            <label for="genero" class="form-label small fw-medium">Género</label>
+                            <textarea id="genero" formControlName="genero" placeholder="Género:" class="form-control"
+                                [ngClass]="getValidationClasses('genero')" rows="1"></textarea>
+                            @if(getError('genero')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('genero') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Fecha Inicio -->
+                        <div class="mb-3">
+                            <label for="inicio" class="form-label small fw-medium">Fecha Inicio</label>
+                            <input type="date" id="inicio" formControlName="inicio" max="9999-12-31"
+                                class="form-control" [ngClass]="getValidationClasses('inicio')" />
+                            @if(getError('inicio')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('inicio') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Fecha Fin -->
+                        <div class="mb-3">
+                            <label for="fin" class="form-label small fw-medium">Fecha Fin</label>
+                            <input type="date" id="fin" formControlName="fin" max="9999-12-31" class="form-control"
+                                [ngClass]="getValidationClasses('fin')" />
+                            @if(getError('fin')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('fin') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Sellos -->
+                        <div class="mb-3">
+                            <label for="sellos" class="form-label small fw-medium">Sellos</label>
+                            <input type="text" id="sellos" formControlName="sellos" placeholder="Sellos del Grupo:"
+                                class="form-control" [ngClass]="getValidationClasses('sellos')">
+                            @if(getError('sellos')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('sellos') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Estatus -->
+                        <div class="mb-3">
+                            <label for="estatusId" class="form-label small fw-medium">Estatus</label>
+                            <select formControlName="estatusId" class="form-control" id="estatusId"
+                                [ngClass]="getValidationClasses('estatusId')">
+                                <option [ngValue]="0" disabled>Selecciona un Estatus</option>
+                                @for (item of estatus; track
+                                item.EstatusId) {
+                                <option [ngValue]="item.EstatusId">{{ item.Estatus }}</option>
+                                }
+                            </select>
+
+                            @if(getError('estatusId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('estatusId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Sitio Web -->
+                        <div class="mb-3">
+                            <label for="sitioWeb" class="form-label small fw-medium">Sitio Web</label>
+                            <input type="url" id="sitioWeb" formControlName="sitioWeb"
+                                placeholder="Enlace de un Sitio Web" class="form-control"
+                                [ngClass]="getValidationClasses('sitioWeb')" />
+                            @if(getError('sitioWeb')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('sitioWeb') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Idioma -->
+                        <div class="mb-3">
+                            <label for="idiomaId" class="form-label small fw-medium">Idioma</label>
+                            <select formControlName="idiomaId" class="form-control" id="idiomaId"
+                                [ngClass]="getValidationClasses('idiomaId')">
+                                <option [ngValue]="0" disabled>Selecciona un Idioma</option>
+                                @for (item of idiomas; track
+                                item.IdiomaId) {
+                                <option [ngValue]="item.IdiomaId">{{ item.Idioma }}</option>
+                                }
+                            </select>
+
+                            @if(getError('idiomaId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('idiomaId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Logo -->
+                        <div class="mb-3">
+                            <label for="logo" class="form-label small fw-medium">Logo</label>
+                            <input type="url" id="logo" formControlName="logo" placeholder="Enlace de un Logo"
+                                class="form-control" [ngClass]="getValidationClasses('logo')" />
+                            @if(getError('logo')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('logo') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
+                            <button type="button" class="btn btn-primary" (click)="regresar()">Regresar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center sticky-preview">
+                    <img [src]="form.get('logo')?.value || '/images/noImagen.png'" class="card-img-top mb-3" appImages>
+
+                    <h3 class="text-uppercase">
+                        {{grupo.grupoId}} - {{form.get('nombre')?.value ||'Nombre del Grupo'}}
+                    </h3>
+
+                    <p>{{ form.get('origen')?.value || 'Origen' }}</p>
+                    <p>{{ form.get('genero')?.value || 'Género' }}</p>
+                    <p>{{(form.get('inicio')?.value | date: 'dd / MMMM / yyyy') ||'Fecha Inicio'}}</p>
+                    <p>{{(form.get('fin')?.value | date: 'dd / MMMM / yyyy') ||'Fecha Fin'}}</p>
+                    <p>{{ form.get('sellos')?.value || 'Sellos Discográficos' }}</p>
+                    <p>{{getNombreEstatus(form.get('estatusId')?.value)|| 'Estatus del Grupo'}}</p>
+                    <p>
+                        @if (sitioWeb?.valid) {
+                        <a [href]="sitioWeb?.value" target="_blank" rel="noopener noreferrer">
+                            {{ sitioWeb?.value }}
+                        </a>
+                        } @else {
+                        SitioWeb
+                        }
+                    </p>
+                    <p>{{getNombreIdioma(form.get('idiomaId')?.value)|| 'Idioma'}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

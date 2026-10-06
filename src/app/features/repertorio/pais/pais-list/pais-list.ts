@@ -19,7 +19,7 @@ import { PaisResponse } from '@shared/models/pais';
 })
 export class PaisList implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Paises';
+  archivo: string = 'Paises';
   displayedColumns: string[] = ['paisId', 'nombre', 'nacionalidad', 'continente', 'acciones'];
 
   dataSource = new MatTableDataSource<PaisResponse>();
@@ -109,9 +109,9 @@ export class PaisList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }

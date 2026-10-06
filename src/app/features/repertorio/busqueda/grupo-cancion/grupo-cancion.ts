@@ -23,7 +23,7 @@ import { NavigationService } from '@core/services/navigation.service';
 })
 export class GrupoCancion implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Canciones';
+  archivo: string = 'Canciones';
 
   displayedColumns: string[] = [
     'cancionId',
@@ -156,9 +156,9 @@ export class GrupoCancion implements OnInit, AfterViewInit {
   export() {
     const params = this.activatedRoute.snapshot.params;
 
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcelAlbum(params['id']).subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 

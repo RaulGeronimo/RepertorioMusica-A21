@@ -49,7 +49,7 @@
 <div class="container-scroll" [hidden]="tabla">
     <div class="row mt-2">
         @for (dato of grupos | customGlobalFilter:search; track dato.grupoId){
-        <div class="col-md-4" style="margin-bottom: 1.5rem;">
+        <div class="col-md-4 mb-4">
             <div class="card text-center">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     {{dato.nombre}}
@@ -82,19 +82,19 @@
 
                 @if(show){
                 <div class="card-body">
-                    <p style="font-weight: bold;">Albumes</p>
+                    <p class="fw-bold">Albumes</p>
                     <p>{{dato.albumes}}</p>
-                    <p style="font-weight: bold;">Canciones</p>
+                    <p class="fw-bold">Canciones</p>
                     <p>{{dato.canciones}}</p>
-                    <p style="font-weight: bold;">Origen</p>
+                    <p class="fw-bold">Origen</p>
                     <p>{{dato.origen}}</p>
-                    <p style="font-weight: bold;">Genero</p>
+                    <p class="fw-bold">Genero</p>
                     <p>{{dato.genero}}</p>
-                    <p style="font-weight: bold;">Periodo</p>
+                    <p class="fw-bold">Periodo</p>
                     <p>{{dato.periodo}}</p>
-                    <p style="font-weight: bold;">Estado</p>
+                    <p class="fw-bold">Estado</p>
                     <p>{{dato.estatus}}</p>
-                    <p style="font-weight: bold;">Sitio Web</p>
+                    <p class="fw-bold">Sitio Web</p>
                     <p><a href="{{dato.sitioWeb}}" target="_blank">{{dato.sitioWeb}}</a></p>
 
                     <div class="btn-group" role="group" aria-label="Basic mixed styles example">

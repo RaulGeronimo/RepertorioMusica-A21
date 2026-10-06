@@ -1,1 +1,145 @@
-<p>disquera-form works!</p>
+<div class="container-scroll">
+    <div class="row mt-2">
+        <div class="col-md-8 mb-3 mb-md-0">
+            <div class="card">
+                <div class="card-body form-scroll">
+                    <form [formGroup]="form" (ngSubmit)="edit ? actualiza() : add()">
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label small fw-medium">Nombre</label>
+                            <input type="text" id="nombre" formControlName="nombre" placeholder="Nombre de la Disquera:"
+                                class="form-control" [ngClass]="getValidationClasses('nombre')">
+                            @if(getError('nombre')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('nombre') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Fecha Fundación -->
+                        <div class="mb-3">
+                            <label for="fundacion" class="form-label small fw-medium">Fecha Fundación</label>
+                            <input type="date" id="fundacion" formControlName="fundacion" max="9999-12-31"
+                                class="form-control" [ngClass]="getValidationClasses('fundacion')" />
+                            @if(getError('fundacion')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('fundacion') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Fundador(es) -->
+                        <div class="mb-3">
+                            <label for="fundador" class="form-label small fw-medium">Fundador(es)</label>
+                            <input type="text" id="fundador" formControlName="fundador"
+                                placeholder="Fundador(es) de la Disquera:" class="form-control"
+                                [ngClass]="getValidationClasses('fundador')">
+                            @if(getError('fundador')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('fundador') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Géneros -->
+                        <div class="mb-3">
+                            <label for="generos" class="form-label small fw-medium">Géneros</label>
+                            <textarea id="generos" formControlName="generos" placeholder="Géneros:" class="form-control"
+                                [ngClass]="getValidationClasses('generos')" rows="1"></textarea>
+                            @if(getError('generos')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('generos') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- País -->
+                        <div class="mb-3">
+                            <label for="paisId" class="form-label small fw-medium">País</label>
+                            <div class="input-group">
+                                <input type="text" [(ngModel)]="search" [ngModelOptions]="{standalone: true}"
+                                    placeholder="País:" class="form-control" [ngClass]="getValidationClasses('paisId')">
+
+                                @if(search != null || edit){
+                                <select formControlName="paisId" class="form-control" id="paisId"
+                                    [ngClass]="getValidationClasses('paisId')">
+                                    <option [ngValue]="0" disabled>Selecciona un País</option>
+                                    @for (item of paises | customGlobalFilter:search; track
+                                    item.paisId) {
+                                    <option [ngValue]="item.paisId">{{ item.nombre }}</option>
+                                    }
+                                </select>
+                                }
+
+                                <button type="button" class="btn btn-primary" (click)="refrescarPaises()"
+                                    title="Refrescar países">
+                                    ↻
+                                </button>
+                            </div>
+                            @if(getError('paisId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('paisId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Estatus -->
+                        <div class="mb-3">
+                            <label for="estatusId" class="form-label small fw-medium">Estatus</label>
+                            <select formControlName="estatusId" class="form-control" id="estatusId"
+                                [ngClass]="getValidationClasses('estatusId')">
+                                <option [ngValue]="0" disabled>Selecciona un Estatus</option>
+                                @for (item of estatus; track
+                                item.EstatusId) {
+                                <option [ngValue]="item.EstatusId">{{ item.Estatus }}</option>
+                                }
+                            </select>
+
+                            @if(getError('estatusId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('estatusId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Logo -->
+                        <div class="mb-3">
+                            <label for="logo" class="form-label small fw-medium">Logo</label>
+                            <input type="url" id="logo" formControlName="logo" placeholder="Enlace de un Logo"
+                                class="form-control" [ngClass]="getValidationClasses('logo')" />
+                            @if(getError('logo')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('logo') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
+                            <a class="btn btn-primary" [routerLink]="edit ? ['../../'] : ['..']">Regresar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center sticky-preview">
+                    <img [src]="form.get('logo')?.value || '/images/noImagen.png'" class="card-img-top mb-3" appImages>
+                    
+                    <h3 class="text-uppercase">
+                        {{disquera.paisId}} - {{form.get('nombre')?.value ||'Nombre de la Disquera'}}
+                    </h3>
+
+                    <p>{{(form.get('fundacion')?.value | date: 'dd / MMMM / yyyy') ||'Fecha Fundación'}}</p>
+                    <p>{{ form.get('fundador')?.value || 'Fundadores' }}</p>
+                    <p>{{ form.get('generos')?.value || 'Géneros' }}</p>
+                    <p>{{getNombrePais(form.get('paisId')?.value)|| 'País de la Disquera'}}</p>
+                    <p>{{getNombreEstatus(form.get('estatusId')?.value)|| 'Estatus de la Disquera'}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

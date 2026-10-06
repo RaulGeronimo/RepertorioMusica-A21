@@ -16,7 +16,7 @@ import { environment } from '@environments/environment';
 })
 export class BitacoraCarga implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Bitacora Carga';
+  archivo: string = 'Bitacora Carga';
 
   displayedColumns: string[] = [
     'bitacoraCargaId',
@@ -29,7 +29,7 @@ export class BitacoraCarga implements OnInit, AfterViewInit {
   ];
 
   dataSource = new MatTableDataSource<BitacoraCargaResponse>();
-  Bitacora: BitacoraCargaResponse[] = [];
+  bitacora: BitacoraCargaResponse[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -67,10 +67,10 @@ export class BitacoraCarga implements OnInit, AfterViewInit {
     this.service.getBitacoraCarga().subscribe({
       next: (res) => {
         if (res != null) {
-          this.Bitacora = res;
-          this.dataSource.data = this.Bitacora;
+          this.bitacora = res;
+          this.dataSource.data = this.bitacora;
         } else {
-          this.Bitacora = [];
+          this.bitacora = [];
           this.alerta.SinResultados();
         }
       },
@@ -91,9 +91,9 @@ export class BitacoraCarga implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcelCarga().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }

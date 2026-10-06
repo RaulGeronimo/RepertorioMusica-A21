@@ -23,7 +23,7 @@ import { NavigationService } from '@core/services/navigation.service';
 })
 export class GrupoArtista implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Artistas';
+  archivo: string = 'Artistas';
 
   displayedColumns: string[] = [
     'artistaGrupoId',
@@ -96,7 +96,9 @@ export class GrupoArtista implements OnInit, AfterViewInit {
     this.puedeCrearAlbum = this.permiso.puedeCrear(Seccion.Album);
     this.puedeCrearCancionAlbum = this.permiso.puedeCrear(Seccion.CancionAlbum);
     this.puedeCrearArtistaGrupo = this.permiso.puedeCrear(Seccion.ArtistaGrupo);
-    this.puedeCrearInstrumentoArtistaGrupo = this.permiso.puedeCrear(Seccion.InstrumentoArtistaGrupo);
+    this.puedeCrearInstrumentoArtistaGrupo = this.permiso.puedeCrear(
+      Seccion.InstrumentoArtistaGrupo,
+    );
 
     this.puedeVerCancionAlbum = this.permiso.puedeVer(Seccion.CancionAlbum);
     this.puedeVerCancion = this.permiso.puedeVer(Seccion.Cancion);
@@ -179,9 +181,9 @@ export class GrupoArtista implements OnInit, AfterViewInit {
   export() {
     const params = this.activatedRoute.snapshot.params;
 
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcelAlbum(params['id']).subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 

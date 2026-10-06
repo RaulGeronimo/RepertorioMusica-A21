@@ -1,1 +1,68 @@
-<p>instrumento-form works!</p>
+<div class="container-scroll">
+    <div class="row mt-2">
+        <div class="col-md-8 mb-3 mb-md-0">
+            <div class="card">
+                <div class="card-body form-scroll">
+                    <form [formGroup]="form" (ngSubmit)="edit ? actualiza() : add()">
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label small fw-medium">Nombre</label>
+                            <input type="text" id="nombre" formControlName="nombre" placeholder="Nombre de la Disquera:"
+                                class="form-control" [ngClass]="getValidationClasses('nombre')">
+                            @if(getError('nombre')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('nombre') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label small fw-medium">Descripción</label>
+                            <textarea id="descripcion" formControlName="descripcion" placeholder="Descripción:"
+                                class="form-control" [ngClass]="getValidationClasses('descripcion')"
+                                rows="4"></textarea>
+                            @if(getError('descripcion')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('descripcion') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Foto -->
+                        <div class="mb-3">
+                            <label for="foto" class="form-label small fw-medium">Foto</label>
+                            <input type="url" id="foto" formControlName="foto" placeholder="Enlace de una Foto"
+                                class="form-control" [ngClass]="getValidationClasses('foto')" />
+                            @if(getError('foto')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('foto') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
+                            <a class="btn btn-primary" [routerLink]="edit ? ['../../'] : ['..']">Regresar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center sticky-preview">
+                    <img [src]="form.get('foto')?.value || '/images/noImagen.png'" class="card-img-top mb-3" appImages>
+
+                    <h3 class="text-uppercase">
+                        {{instrumento.instrumentoId}} - {{form.get('nombre')?.value ||'Nombre del Instrumento'}}
+                    </h3>
+
+                    <p>{{ form.get('descripcion')?.value || 'Descripción' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

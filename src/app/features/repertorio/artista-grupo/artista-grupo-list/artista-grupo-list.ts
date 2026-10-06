@@ -19,7 +19,7 @@ import { ArtistaGrupoResponse } from '@shared/models/artista-grupo';
 })
 export class ArtistaGrupoList implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Artistas';
+  archivo: string = 'Artistas';
   displayedColumns: string[] = [
     'artistaGrupoId',
     'nombre',
@@ -76,7 +76,9 @@ export class ArtistaGrupoList implements OnInit, AfterViewInit {
 
   obtenerPermiso() {
     this.puedeCrearArtistaGrupo = this.permiso.puedeCrear(Seccion.ArtistaGrupo);
-    this.puedeCrearInstrumentoArtistaGrupo = this.permiso.puedeCrear(Seccion.InstrumentoArtistaGrupo);
+    this.puedeCrearInstrumentoArtistaGrupo = this.permiso.puedeCrear(
+      Seccion.InstrumentoArtistaGrupo,
+    );
 
     this.puedeEditarArtistaGrupo = this.permiso.puedeEditar(Seccion.ArtistaGrupo);
 
@@ -130,9 +132,9 @@ export class ArtistaGrupoList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }

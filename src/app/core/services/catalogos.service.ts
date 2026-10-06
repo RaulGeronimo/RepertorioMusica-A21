@@ -7,6 +7,7 @@ import {
   IdiomaResponse,
   InterpretacionResponse,
   RolResponse,
+  TipoVozResponse,
 } from '@core/models/catalogos';
 import { environment } from '@environments/environment';
 import { Observable } from 'rxjs';
@@ -42,7 +43,7 @@ export class CatalogosService {
     return this.http.get<InterpretacionResponse[]>(`${this.API_URL}/Interpretacion`);
   }
 
-  getTipoVoz(): Observable<RolResponse[]> {
-    return this.http.get<RolResponse[]>(`${this.API_URL}/TipoVoz`);
+  getTipoVoz(): Observable<TipoVozResponse[]> {
+    return this.http.get<TipoVozResponse[]>(`${this.API_URL}/TipoVoz`);
   }
 }

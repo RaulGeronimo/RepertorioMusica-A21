@@ -21,7 +21,7 @@ import { RolResponse } from '@core/models/catalogos';
 })
 export class UsuarioList implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Usuarios';
+  archivo: string = 'Usuarios';
 
   displayedColumns: string[] = [
     'usuarioId',
@@ -38,10 +38,10 @@ export class UsuarioList implements OnInit, AfterViewInit {
 
   dataSource = new MatTableDataSource<UsuarioResponse>();
 
-  Usuarios: UsuarioResponse[] = [];
+  usuarios: UsuarioResponse[] = [];
   user: Usuario;
 
-  Roles: RolResponse[] = [];
+  roles: RolResponse[] = [];
 
   //#region Permisos
   puedeEditarUsuarios = false;
@@ -95,10 +95,10 @@ export class UsuarioList implements OnInit, AfterViewInit {
     this.service.getUsuarios().subscribe({
       next: (res) => {
         if (res != null) {
-          this.Usuarios = res;
-          this.dataSource.data = this.Usuarios;
+          this.usuarios = res;
+          this.dataSource.data = this.usuarios;
         } else {
-          this.Usuarios = [];
+          this.usuarios = [];
           this.alerta.SinResultados();
         }
       },
@@ -113,7 +113,7 @@ export class UsuarioList implements OnInit, AfterViewInit {
   obtenerRoles() {
     this.catalogo.getRol().subscribe({
       next: (res) => {
-        this.Roles = res;
+        this.roles = res;
         this.cdr.markForCheck();
       },
       error: (err: unknown) => {
@@ -189,7 +189,7 @@ export class UsuarioList implements OnInit, AfterViewInit {
       return;
     }
 
-    const rolEncontrado = this.Roles.find((r) => r.RolId === nuevoRolId);
+    const rolEncontrado = this.roles.find((r) => r.RolId === nuevoRolId);
     const nombreRol = rolEncontrado ? rolEncontrado.Rol : nuevoRolId;
 
     const usuarioActualizado = { ...usuario, rol: nuevoRolId };
@@ -211,9 +211,9 @@ export class UsuarioList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }

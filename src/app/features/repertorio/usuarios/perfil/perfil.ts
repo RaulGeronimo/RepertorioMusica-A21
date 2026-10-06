@@ -22,14 +22,14 @@ export class Perfil implements OnInit, AfterViewInit {
   perfil = signal<UsuarioResponse>({} as UsuarioResponse);
   permisos: Permiso[] = [];
 
-  BitacoraC: BitacoraCargaResponse[] = [];
-  BitacoraE: BitacoraErrorResponse[] = [];
+  bitacoraC: BitacoraCargaResponse[] = [];
+  bitacoraE: BitacoraErrorResponse[] = [];
 
-  TotalCorrectos = signal<number>(0);
-  TotalError = signal<number>(0);
-  TotalAgregados = signal<number>(0);
-  TotalActualizados = signal<number>(0);
-  TotalEliminados = signal<number>(0);
+  totalCorrectos = signal<number>(0);
+  totalError = signal<number>(0);
+  totalAgregados = signal<number>(0);
+  totalActualizados = signal<number>(0);
+  totalEliminados = signal<number>(0);
 
   displayedColumns: string[] = ['seccion', 'crear', 'editar', 'eliminar', 'ver'];
   dataSource = new MatTableDataSource<Permiso>();
@@ -55,7 +55,7 @@ export class Perfil implements OnInit, AfterViewInit {
     labels: ['Cargas Exitosas', 'Errores'],
     datasets: [
       {
-        data: [this.TotalCorrectos(), this.TotalError()],
+        data: [this.totalCorrectos(), this.totalError()],
         backgroundColor: ['#4caf50', '#f44336'],
         borderColor: ['#388e3c', '#d32f2f'],
         borderWidth: 2,
@@ -76,7 +76,7 @@ export class Perfil implements OnInit, AfterViewInit {
     labels: ['Agregados', 'Actualizados', 'Eliminados'],
     datasets: [
       {
-        data: [this.TotalAgregados(), this.TotalActualizados(), this.TotalEliminados()],
+        data: [this.totalAgregados(), this.totalActualizados(), this.totalEliminados()],
         backgroundColor: ['#4caf50', '#ff9800', '#f44336'],
         borderColor: ['#388e3c', '#f57c00', '#d32f2f'],
         borderWidth: 2,
@@ -131,23 +131,23 @@ export class Perfil implements OnInit, AfterViewInit {
   obtenerBitacoraCarga() {
     this.bitacoraService.getBitacoraCargaUsuario().subscribe({
       next: (res) => {
-        this.BitacoraC = res || [];
+        this.bitacoraC = res || [];
 
-        this.TotalCorrectos.set(this.BitacoraC[0]?.totalRegistros ?? this.BitacoraC.length);
+        this.totalCorrectos.set(this.bitacoraC[0]?.totalRegistros ?? this.bitacoraC.length);
 
-        this.TotalAgregados.set(
-          this.BitacoraC.filter((x: any) => x.proceso?.toLowerCase().includes('agregad')).length,
+        this.totalAgregados.set(
+          this.bitacoraC.filter((x: any) => x.proceso?.toLowerCase().includes('agregad')).length,
         );
 
-        this.TotalActualizados.set(
-          this.BitacoraC.filter((x: any) => x.proceso?.toLowerCase().includes('actualizad')).length,
+        this.totalActualizados.set(
+          this.bitacoraC.filter((x: any) => x.proceso?.toLowerCase().includes('actualizad')).length,
         );
 
-        this.TotalEliminados.set(
-          this.BitacoraC.filter((x: any) => x.proceso?.toLowerCase().includes('eliminad')).length,
+        this.totalEliminados.set(
+          this.bitacoraC.filter((x: any) => x.proceso?.toLowerCase().includes('eliminad')).length,
         );
 
-        this.movimientos = this.BitacoraC.map((x: any) => ({
+        this.movimientos = this.bitacoraC.map((x: any) => ({
           operacion: x.operacion,
           entidad: x.entidad,
           fecha: x.fecha ? new Date(x.fecha) : new Date(),
@@ -165,8 +165,8 @@ export class Perfil implements OnInit, AfterViewInit {
   obtenerBitacoraError() {
     this.bitacoraService.getBitacoraErrorUsuario().subscribe({
       next: (res) => {
-        this.BitacoraE = res;
-        this.TotalError.set(this.BitacoraE[0]?.totalRegistros ?? 0);
+        this.bitacoraE = res;
+        this.totalError.set(this.bitacoraE[0]?.totalRegistros ?? 0);
       },
       error: (err: unknown) => {
         console.error(err);

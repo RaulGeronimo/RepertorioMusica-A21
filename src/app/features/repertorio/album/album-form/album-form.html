@@ -1,1 +1,158 @@
-<p>album-form works!</p>
+<div class="container-scroll">
+    <div class="row mt-2">
+        <div class="col-md-8 mb-3 mb-md-0">
+            <div class="card">
+                <div class="card-body form-scroll">
+                    <form [formGroup]="form" (ngSubmit)="edit ? actualiza() : add()">
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label small fw-medium">Nombre</label>
+                            <input type="text" id="nombre" formControlName="nombre" placeholder="Nombre del Álbum:"
+                                class="form-control" [ngClass]="getValidationClasses('nombre')">
+                            @if(getError('nombre')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('nombre') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Grupo -->
+                        <div class="mb-3">
+                            <label for="grupoId" class="form-label small fw-medium">Grupo</label>
+                            <div class="input-group">
+                                <input type="text" [(ngModel)]="search" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Grupo:" class="form-control"
+                                    [ngClass]="getValidationClasses('grupoId')">
+
+                                @if(search != null || edit){
+                                <select formControlName="grupoId" class="form-control" id="grupoId"
+                                    [ngClass]="getValidationClasses('grupoId')">
+                                    <option [ngValue]="0" disabled>Selecciona un Grupo</option>
+                                    @for (item of grupos | customGlobalFilter:search; track
+                                    item.grupoId) {
+                                    <option [ngValue]="item.grupoId">{{ item.nombre }}</option>
+                                    }
+                                </select>
+                                }
+
+                                <button type="button" class="btn btn-primary" (click)="refrescarGrupos()"
+                                    title="Refrescar Grupos">
+                                    ↻
+                                </button>
+                            </div>
+                            @if(getError('grupoId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('grupoId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Disquera -->
+                        <div class="mb-3">
+                            <label for="disqueraId" class="form-label small fw-medium">Disquera</label>
+                            <div class="input-group">
+                                <input type="text" [(ngModel)]="searchDisquera" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Disquera:" class="form-control"
+                                    [ngClass]="getValidationClasses('disqueraId')">
+
+                                @if(searchDisquera!= null || edit){
+                                <select formControlName="disqueraId" class="form-control" id="disqueraId"
+                                    [ngClass]="getValidationClasses('disqueraId')">
+                                    <option [ngValue]="0" disabled>Selecciona una Disquera</option>
+                                    @for (item of disqueras | customGlobalFilter:searchDisquera; track
+                                    item.disqueraId) {
+                                    <option [ngValue]="item.disqueraId">{{ item.nombre }}</option>
+                                    }
+                                </select>
+                                }
+
+                                <button type="button" class="btn btn-primary" (click)="refrescarDisqueras()"
+                                    title="Refrescar Disqueras">
+                                    ↻
+                                </button>
+                            </div>
+                            @if(getError('disqueraId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('disqueraId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Duración -->
+                        <div class="mb-3">
+                            <label for="duracion" class="form-label small fw-medium">Duración</label>
+                            <input type="time" step="2" id="duracion" formControlName="duracion" placeholder="Duracion"
+                                class="form-control" [ngClass]="getValidationClasses('duracion')" />
+                            @if(getError('duracion')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('duracion') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Fecha Lanzamiento -->
+                        <div class="mb-3">
+                            <label for="lanzamiento" class="form-label small fw-medium">Fecha Lanzamiento</label>
+                            <input type="date" id="lanzamiento" formControlName="lanzamiento" max="9999-12-31"
+                                class="form-control" [ngClass]="getValidationClasses('lanzamiento')" />
+                            @if(getError('lanzamiento')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('lanzamiento') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Grabacion -->
+                        <div class="mb-3">
+                            <label for="grabacion" class="form-label small fw-medium">Grabación</label>
+                            <textarea id="grabacion" formControlName="grabacion" placeholder="Grabación:"
+                                class="form-control" [ngClass]="getValidationClasses('grabacion')" rows="1"></textarea>
+                            @if(getError('grabacion')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('grabacion') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Portada -->
+                        <div class="mb-3">
+                            <label for="portada" class="form-label small fw-medium">Portada</label>
+                            <input type="url" id="portada" formControlName="portada" placeholder="Enlace de la Portada"
+                                class="form-control" [ngClass]="getValidationClasses('portada')" />
+                            @if(getError('portada')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('portada') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
+                            <button type="button" class="btn btn-primary" (click)="regresar()">Regresar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center sticky-preview">
+                    <img [src]="form.get('portada')?.value || '/images/noImagen.png'" class="card-img-top mb-3"
+                        appImages>
+
+                    <h3 class="text-uppercase">
+                        {{album.albumId}} - {{form.get('nombre')?.value ||'Nombre del Álbum'}}
+                    </h3>
+
+                    <p>{{getNombreGrupo(form.get('grupoId')?.value)|| 'Nombre del Grupo'}}</p>
+                    <p>{{getNombreDisquera(form.get('disqueraId')?.value)|| 'Nombre de la Disquera'}}</p>
+                    <p>{{ form.get('duracion')?.value || 'Duración' }}</p>
+                    <p>{{(form.get('lanzamiento')?.value | date: 'dd / MMMM / yyyy') ||'Fecha Lanzamiento'}}</p>
+                    <p>{{ form.get('grabacion')?.value || 'Grabación' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

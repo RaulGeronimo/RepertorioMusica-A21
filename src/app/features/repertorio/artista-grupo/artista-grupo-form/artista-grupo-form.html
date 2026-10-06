@@ -1,1 +1,120 @@
-<p>artista-grupo-form works!</p>
+<div class="container-scroll">
+    <div class="row mt-2">
+        <div class="col-md-8 mb-3 mb-md-0">
+            <div class="card">
+                <div class="card-body form-scroll">
+                    <form [formGroup]="form" (ngSubmit)="edit ? actualiza() : add()">
+                        <!-- Artista -->
+                        <div class="mb-3">
+                            <label for="artistaId" class="form-label small fw-medium">Artista</label>
+                            <div class="input-group">
+                                <input type="text" [(ngModel)]="search" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Artista:" class="form-control"
+                                    [ngClass]="getValidationClasses('artistaId')">
+
+                                @if(search != null || edit){
+                                <select formControlName="artistaId" class="form-control" id="artistaId"
+                                    [ngClass]="getValidationClasses('artistaId')">
+                                    <option [ngValue]="0" disabled>Selecciona un Artista</option>
+                                    @for (item of artistas | customGlobalFilter:search; track
+                                    item.artistaId) {
+                                    <option [ngValue]="item.artistaId">{{ item.nombreArtistico }}</option>
+                                    }
+                                </select>
+                                }
+
+                                <button type="button" class="btn btn-primary" (click)="refrescarArtistas()"
+                                    title="Refrescar artistas">
+                                    ↻
+                                </button>
+                            </div>
+                            @if(getError('artistaId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('artistaId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Grupo -->
+                        <div class="mb-3">
+                            <label for="grupoId" class="form-label small fw-medium">Grupo</label>
+                            <div class="input-group">
+                                <input type="text" [(ngModel)]="searchGrupo" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Grupo:" class="form-control"
+                                    [ngClass]="getValidationClasses('grupoId')">
+
+                                @if(searchGrupo != null || edit){
+                                <select formControlName="grupoId" class="form-control" id="grupoId"
+                                    [ngClass]="getValidationClasses('grupoId')">
+                                    <option [ngValue]="0" disabled>Selecciona un Grupo</option>
+                                    @for (item of grupos | customGlobalFilter:searchGrupo; track
+                                    item.grupoId) {
+                                    <option [ngValue]="item.grupoId">{{ item.nombre }}</option>
+                                    }
+                                </select>
+                                }
+
+                                <button type="button" class="btn btn-primary" (click)="refrescarGrupos()"
+                                    title="Refrescar grupos">
+                                    ↻
+                                </button>
+                            </div>
+                            @if(getError('grupoId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('grupoId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Fecha Inicio -->
+                        <div class="mb-3">
+                            <label for="fechaInicio" class="form-label small fw-medium">Fecha Inicio</label>
+                            <input type="date" id="fechaInicio" formControlName="fechaInicio" max="9999-12-31"
+                                class="form-control" [ngClass]="getValidationClasses('fechaInicio')" />
+                            @if(getError('fechaInicio')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('fechaInicio') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Fecha Fin -->
+                        <div class="mb-3">
+                            <label for="fechaFin" class="form-label small fw-medium">Fecha Fin</label>
+                            <input type="date" id="fechaFin" formControlName="fechaFin" max="9999-12-31"
+                                class="form-control" [ngClass]="getValidationClasses('fechaFin')" />
+                            @if(getError('fechaFin')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('fechaFin') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
+                            <button type="button" class="btn btn-primary" (click)="regresar()">Regresar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center sticky-preview">
+                    <img [src]="getImagenGrupo(form.get('grupoId')?.value) || '/images/noImagen.png'"
+                        class="card-img-top mb-3" appImages>
+                    
+                    <h3 class="text-transform: uppercase;">
+                        {{artistaGrupo.artistaGrupoId}} -
+                        {{getNombreArtista(form.get('artistaId')?.value) || 'Nombre del Artista'}}
+                    </h3>
+
+                    <p>{{(form.get('fechaInicio')?.value | date: 'dd / MMMM / yyyy')|| 'Fecha Inicio'}}</p>
+                    <p>{{(form.get('fechaFin')?.value | date: 'dd / MMMM / yyyy') ||'Fecha Fin'}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

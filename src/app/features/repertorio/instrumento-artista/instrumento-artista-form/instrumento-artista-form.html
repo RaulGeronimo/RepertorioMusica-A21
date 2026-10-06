@@ -1,1 +1,86 @@
-<p>instrumento-artista-form works!</p>
+<div class="container-scroll">
+    <div class="row mt-2">
+        <div class="col-md-8 mb-3 mb-md-0">
+            <div class="card">
+                <div class="card-body form-scroll">
+                    <form [formGroup]="form" (ngSubmit)="edit ? actualiza() : add()">
+                        <!-- Artista -->
+                        <div class="mb-3">
+                            <label for="artistaId" class="form-label small fw-medium">Artista</label>
+                            <div class="input-group">
+                                <input type="text" [(ngModel)]="search" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Grupo:" class="form-control"
+                                    [ngClass]="getValidationClasses('artistaId')">
+
+                                @if(search != null || edit){
+                                <select formControlName="artistaId" class="form-control" id="artistaId"
+                                    [ngClass]="getValidationClasses('artistaId')">
+                                    <option [ngValue]="0" disabled>Selecciona un Artista</option>
+                                    @for (item of artistas | customGlobalFilter:search; track
+                                    item.artistaGrupoId) {
+                                    <option [ngValue]="item.artistaGrupoId">
+                                        {{ item.nombreArtistico }} ({{item.grupo}})
+                                    </option>
+                                    }
+                                </select>
+                                }
+
+                                <button type="button" class="btn btn-primary" (click)="refrescarArtistas()"
+                                    title="Refrescar artistas">
+                                    ↻
+                                </button>
+                            </div>
+                            @if(getError('artistaId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('artistaId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Instrumento -->
+                        <div class="mb-3">
+                            <label for="instrumentoId" class="form-label small fw-medium">Instrumento</label>
+                            <select formControlName="instrumentoId" class="form-control" id="instrumentoId"
+                                [ngClass]="getValidationClasses('instrumentoId')">
+                                <option [ngValue]="0" disabled>Selecciona un Instrumento</option>
+                                @for (item of instrumentos; track
+                                item.instrumentoId) {
+                                <option [ngValue]="item.instrumentoId">{{ item.nombre }}</option>
+                                }
+                            </select>
+
+                            @if(getError('instrumentoId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('instrumentoId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
+                            <button type="button" class="btn btn-primary" (click)="regresar()">Regresar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center sticky-preview">
+                    <img [src]="getImagenArtista(form.get('artistaId')?.value) || '/images/noImagen.png'"
+                        class="card-img-top mb-3" appImages>
+
+                    <h3 class="text-transform: uppercase;">
+                        {{instrumentoArtista.instrumentoArtistaGrupoId}} -
+                        {{getNombreArtista(form.get('artistaId')?.value) || 'Nombre del Artista'}}
+                    </h3>
+
+                    <p>{{getNombreGrupo(form.get('artistaId')?.value)|| 'Grupo'}}</p>
+                    <p>{{getNombreInstrumento(form.get('instrumentoId')?.value)|| 'Instrumento'}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

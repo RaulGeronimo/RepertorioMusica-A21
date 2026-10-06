@@ -1,1 +1,106 @@
-<p>cancion-album-form works!</p>
+<div class="container-scroll">
+    <div class="row mt-2">
+        <div class="col-md-8 mb-3 mb-md-0">
+            <div class="card">
+                <div class="card-body form-scroll">
+                    <form [formGroup]="form" (ngSubmit)="edit ? actualiza() : add()">
+                        <!-- Grupo -->
+                        <div class="mb-3">
+                            <label for="grupoId" class="form-label small fw-medium">Grupo</label>
+                            <div class="input-group">
+                                <input type="text" [(ngModel)]="search" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Grupo:" class="form-control"
+                                    [ngClass]="getValidationClasses('grupoId')">
+                            </div>
+                        </div>
+
+                        <!-- Álbum -->
+                        <div class="mb-3">
+                            <label for="albumId" class="form-label small fw-medium">Álbum</label>
+                            <div class="input-group">
+                                <select formControlName="albumId" class="form-control" id="albumId"
+                                    [ngClass]="getValidationClasses('albumId')">
+                                    <option [ngValue]="0" disabled>Selecciona un Álbum</option>
+                                    @for (item of albumes | customGlobalFilter:search; track
+                                    item.albumId) {
+                                    <option [ngValue]="item.albumId">{{ item.nombre }}</option>
+                                    }
+                                </select>
+
+                                <button type="button" class="btn btn-primary" (click)="refrescarAlbumes()"
+                                    title="Refrescar Álbumes">
+                                    ↻
+                                </button>
+                            </div>
+                            @if(getError('albumId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('albumId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Cancion -->
+                        <div class="mb-3">
+                            <label for="cancionId" class="form-label small fw-medium">Cancion</label>
+                            <div class="input-group">
+                                <select formControlName="cancionId" class="form-control" id="cancionId"
+                                    [ngClass]="getValidationClasses('cancionId')">
+                                    <option [ngValue]="0" disabled>Selecciona una Cancion</option>
+                                    @for (item of canciones | customGlobalFilter:search; track
+                                    item.cancionId) {
+                                    <option [ngValue]="item.cancionId">{{ item.nombre }}</option>
+                                    }
+                                </select>
+
+                                <button type="button" class="btn btn-primary" (click)="refrescarCanciones()"
+                                    title="Refrescar Canciones">
+                                    ↻
+                                </button>
+                            </div>
+                            @if(getError('cancionId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('cancionId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Número -->
+                        <div class="mb-3">
+                            <label for="numero" class="form-label small fw-medium">Número</label>
+                            <input type="number" id="numero" formControlName="numero" placeholder="Número"
+                                class="form-control" [ngClass]="getValidationClasses('numero')" />
+                            @if(getError('numero')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('numero') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
+                            <button type="button" class="btn btn-primary" (click)="regresar()">Regresar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center sticky-preview">
+                    <img [src]="getImagenAlbum(form.get('albumId')?.value) || '/images/noImagen.png'"
+                        class="card-img-top mb-3" appImages>
+
+                    <h3 class="text-uppercase">
+                        {{cancionAlbum.cancionAlbumId}} -
+                        {{getNombreCancion(form.get('cancionId')?.value) ||'Nombre de la Canción'}}
+                    </h3>
+
+                    <p>{{getNombreAlbum(form.get('albumId')?.value)|| 'Nombre del Álbum'}}</p>
+                    <p>{{ form.get('numero')?.value || 'Número' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

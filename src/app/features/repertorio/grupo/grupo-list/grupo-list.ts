@@ -19,7 +19,7 @@ import { GrupoResponse } from '@shared/models/grupo';
 })
 export class GrupoList implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Grupos';
+  archivo: string = 'Grupos';
   displayedColumns: string[] = [
     'grupoId',
     'nombre',
@@ -135,9 +135,9 @@ export class GrupoList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }

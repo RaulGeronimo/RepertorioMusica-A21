@@ -19,7 +19,7 @@ import { InstrumentoResponse } from '@shared/models/instrumento';
 })
 export class InstrumentoList implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Instrumentos';
+  archivo: string = 'Instrumentos';
   displayedColumns: string[] = ['instrumentoId', 'nombre', 'descripcion', 'acciones'];
 
   dataSource = new MatTableDataSource<InstrumentoResponse>();
@@ -109,9 +109,9 @@ export class InstrumentoList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }

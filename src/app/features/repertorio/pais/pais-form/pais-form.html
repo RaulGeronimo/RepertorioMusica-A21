@@ -1,1 +1,89 @@
-<p>pais-form works!</p>
+<div class="container-scroll">
+    <div class="row mt-2">
+        <div class="col-md-8 mb-3 mb-md-0">
+            <div class="card">
+                <div class="card-body form-scroll">
+                    <form [formGroup]="form" (ngSubmit)="edit ? actualiza() : add()">
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label small fw-medium">Nombre</label>
+                            <input type="text" id="nombre" formControlName="nombre" placeholder="Nombre del País:"
+                                class="form-control" [ngClass]="getValidationClasses('nombre')">
+                            @if(getError('nombre')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('nombre') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Nacionalidad -->
+                        <div class="mb-3">
+                            <label for="nacionalidad" class="form-label small fw-medium">Nacionalidad</label>
+                            <input type="text" id="nacionalidad" formControlName="nacionalidad"
+                                placeholder="Nacionalidad del País:" class="form-control"
+                                [ngClass]="getValidationClasses('nacionalidad')">
+                            @if(getError('nacionalidad')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('nacionalidad') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Continente -->
+                        <div class="mb-3">
+                            <label for="continenteId" class="form-label small fw-medium">Continente</label>
+                            <select formControlName="continenteId" class="form-control" id="continenteId"
+                                [ngClass]="getValidationClasses('continenteId')">
+                                <option [ngValue]="0" disabled>Selecciona un Continente</option>
+                                @for (item of continentes; track
+                                item.ContinenteId) {
+                                <option [ngValue]="item.ContinenteId">{{ item.Continente }}</option>
+                                }
+                            </select>
+
+                            @if(getError('continenteId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('continenteId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Bandera -->
+                        <div class="mb-3">
+                            <label for="bandera" class="form-label small fw-medium">Bandera</label>
+                            <input type="url" id="bandera" formControlName="bandera" placeholder="Enlace de una Bandera"
+                                class="form-control" [ngClass]="getValidationClasses('bandera')" />
+                            @if(getError('bandera')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('bandera') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
+                            <a class="btn btn-primary" [routerLink]="edit ? ['../../'] : ['..']">Regresar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center sticky-preview">
+                    <img [src]="form.get('bandera')?.value || '/images/noImagen.png'" class="card-img-top mb-3"
+                        appImages>
+
+                    <h3 class="text-uppercase">
+                        {{pais.paisId}} - {{form.get('nombre')?.value ||'Nombre del País'}}
+                    </h3>
+
+                    <p>{{getNombreContinente(form.get('continenteId')?.value)|| 'Continente'}}</p>
+                    <p>{{ form.get('nacionalidad')?.value || 'Nacionalidad' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

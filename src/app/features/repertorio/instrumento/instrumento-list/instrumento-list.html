@@ -30,7 +30,7 @@
 <div class="container-scroll" [hidden]="tabla">
     <div class="row mt-2">
         @for (dato of instrumentos | customGlobalFilter:search; track dato.instrumentoId){
-        <div class="col-md-4" style="margin-bottom: 1.5rem;">
+        <div class="col-md-4 mb-4">
             <div class="card text-center">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     {{dato.nombre}}
@@ -63,7 +63,7 @@
 
                 @if(show){
                 <div class="card-body">
-                    <p style="font-weight: bold;">Descripcion</p>
+                    <p class="fw-bold">Descripcion</p>
                     <p>{{dato.descripcion}}</p>
 
                     <div class="btn-group" role="group" aria-label="Basic mixed styles example">

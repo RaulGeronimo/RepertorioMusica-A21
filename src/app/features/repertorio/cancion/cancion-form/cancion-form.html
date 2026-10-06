@@ -1,1 +1,134 @@
-<p>cancion-form works!</p>
+<div class="container-scroll">
+    <div class="row mt-2">
+        <div class="col-md-8 mb-3 mb-md-0">
+            <div class="card">
+                <div class="card-body form-scroll">
+                    <form [formGroup]="form" (ngSubmit)="edit ? actualiza() : add()">
+                        <!-- Grupo -->
+                        <div class="mb-3">
+                            <label for="grupoId" class="form-label small fw-medium">Grupo</label>
+                            <div class="input-group">
+                                <input type="text" [(ngModel)]="search" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Grupo:" class="form-control"
+                                    [ngClass]="getValidationClasses('grupoId')">
+
+                                @if(search != null || edit){
+                                <select formControlName="grupoId" class="form-control" id="grupoId"
+                                    [ngClass]="getValidationClasses('grupoId')">
+                                    <option [ngValue]="0" disabled>Selecciona un Grupo</option>
+                                    @for (item of grupos | customGlobalFilter:search; track
+                                    item.grupoId) {
+                                    <option [ngValue]="item.grupoId">{{ item.nombre }}</option>
+                                    }
+                                </select>
+                                }
+
+                                <button type="button" class="btn btn-primary" (click)="refrescarGrupos()"
+                                    title="Refrescar Grupos">
+                                    ↻
+                                </button>
+                            </div>
+                            @if(getError('grupoId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('grupoId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label small fw-medium">Nombre</label>
+                            <input type="text" id="nombre" formControlName="nombre" placeholder="Nombre de la Canción:"
+                                class="form-control" [ngClass]="getValidationClasses('nombre')">
+                            @if(getError('nombre')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('nombre') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Duración -->
+                        <div class="mb-3">
+                            <label for="duracion" class="form-label small fw-medium">Duración</label>
+                            <input type="time" step="2" id="duracion" formControlName="duracion" placeholder="Duración"
+                                class="form-control" [ngClass]="getValidationClasses('duracion')" />
+                            @if(getError('duracion')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('duracion') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Fecha Publicación -->
+                        <div class="mb-3">
+                            <label for="publicacion" class="form-label small fw-medium">Fecha Publicación</label>
+                            <input type="date" id="publicacion" formControlName="publicacion" max="9999-12-31"
+                                class="form-control" [ngClass]="getValidationClasses('publicacion')" />
+                            @if(getError('publicacion')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('publicacion') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Género -->
+                        <div class="mb-3">
+                            <label for="genero" class="form-label small fw-medium">Género</label>
+                            <textarea id="genero" formControlName="genero" placeholder="Género:" class="form-control"
+                                [ngClass]="getValidationClasses('genero')" rows="1"></textarea>
+                            @if(getError('genero')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('genero') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Interpretación -->
+                        <div class="mb-3">
+                            <label for="interpretacionId" class="form-label small fw-medium">Interpretación</label>
+                            <select formControlName="interpretacionId" class="form-control" id="interpretacionId"
+                                [ngClass]="getValidationClasses('interpretacionId')">
+                                <option [ngValue]="0" disabled>Selecciona una Interpretación</option>
+                                @for (item of interpretaciones; track
+                                item.InterpretacionId) {
+                                <option [ngValue]="item.InterpretacionId">{{ item.Interpretacion }}</option>
+                                }
+                            </select>
+
+                            @if(getError('interpretacionId')){
+                            <div class="invalid-feedback d-block">
+                                {{ getError('interpretacionId') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
+                            <button type="button" class="btn btn-primary" (click)="regresar()">Regresar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center sticky-preview">
+                    <img [src]="getImagenGrupo(form.get('grupoId')?.value) || '/images/noImagen.png'"
+                        class="card-img-top mb-3" appImages>
+                    
+                    <h3 class="text-uppercase">
+                        {{cancion.cancionId}} - {{form.get('nombre')?.value ||'Nombre de la Canción'}}
+                    </h3>
+
+                    <p>{{ form.get('duracion')?.value || 'Duración' }}</p>
+                    <p>{{(form.get('publicacion')?.value | date: 'dd / MMMM / yyyy') ||'Fecha Publicación'}}</p>
+                    <p>{{ form.get('genero')?.value || 'Género' }}</p>
+                    <!-- <p>{{getNombreGrupo(form.get('grupoId')?.value)|| 'Nombre del Grupo'}}</p> -->
+                    <p>{{getNombreInterpretacion(form.get('interpretacionId')?.value)|| 'Tipo de Interpretación'}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

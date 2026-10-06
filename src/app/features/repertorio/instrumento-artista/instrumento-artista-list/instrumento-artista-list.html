@@ -49,7 +49,7 @@
 <div class="container-scroll" [hidden]="tabla">
     <div class="row mt-2">
         @for (dato of artistas | customGlobalFilter:search; track dato.instrumentoArtistaGrupoId){
-        <div class="col-md-4" style="margin-bottom: 1.5rem;">
+        <div class="col-md-4 mb-4">
             <div class="card text-center">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     {{dato.nombreArtistico}}
@@ -82,9 +82,9 @@
 
                 @if(show){
                 <div class="card-body">
-                    <p style="font-weight: bold;">Grupo</p>
+                    <p class="fw-bold">Grupo</p>
                     <p>{{dato.grupo}}</p>
-                    <p style="font-weight: bold;">Instrumento</p>
+                    <p class="fw-bold">Instrumento</p>
                     <p>{{dato.instrumento}}</p>
 
                     <div class="btn-group" role="group" aria-label="Basic mixed styles example">

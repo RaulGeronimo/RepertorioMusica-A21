@@ -19,7 +19,7 @@ import { AlbumResponse } from '@shared/models/album';
 })
 export class AlbumList implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Albumes';
+  archivo: string = 'Albumes';
   displayedColumns: string[] = [
     'albumId',
     'nombre',
@@ -129,9 +129,9 @@ export class AlbumList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }

@@ -30,7 +30,7 @@
 <div class="container-scroll" [hidden]="tabla">
     <div class="row mt-2">
         @for (dato of paises | customGlobalFilter:search; track dato.paisId){
-        <div class="col-md-4" style="margin-bottom: 1.5rem;">
+        <div class="col-md-4 mb-4">
             <div class="card text-center">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     {{dato.nombre}}
@@ -63,9 +63,9 @@
 
                 @if(show){
                 <div class="card-body">
-                    <p style="font-weight: bold;">Nacionalidad</p>
+                    <p class="fw-bold">Nacionalidad</p>
                     <p>{{dato.nacionalidad}}</p>
-                    <p style="font-weight: bold;">Continente</p>
+                    <p class="fw-bold">Continente</p>
                     <p>{{dato.continente}}</p>
 
                     <div class="btn-group" role="group" aria-label="Basic mixed styles example">

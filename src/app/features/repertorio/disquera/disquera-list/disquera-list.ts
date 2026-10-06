@@ -19,7 +19,7 @@ import { DisqueraResponse } from '@shared/models/disquera';
 })
 export class DisqueraList implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  Archivo: string = 'Disqueras';
+  archivo: string = 'Disqueras';
   displayedColumns: string[] = [
     'disqueraId',
     'nombre',
@@ -122,9 +122,9 @@ export class DisqueraList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.Archivo);
+    this.alerta.reporte(this.archivo);
     this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.Archivo);
+      this.reportes.descargarExcel(blob, this.archivo);
     });
   }
 }
