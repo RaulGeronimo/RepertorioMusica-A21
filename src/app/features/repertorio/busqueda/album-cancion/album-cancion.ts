@@ -15,6 +15,8 @@ import { AlbumResponse } from '@shared/models/album';
 import { CancionAlbumResponse } from '@shared/models/cancion-album';
 import { NavigationService } from '@core/services/navigation.service';
 
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
 @Component({
   selector: 'app-album-cancion',
   standalone: false,
@@ -25,7 +27,14 @@ export class AlbumCancion implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
   archivo: string = 'Canciones';
 
-  displayedColumns: string[] = ['numero', 'nombre', 'duracion', 'publicacion', 'genero'];
+  displayedColumns: string[] = [
+    'numero',
+    'nombre',
+    'duracion',
+    'publicacion',
+    'genero',
+    'reproducir',
+  ];
 
   dataSource = new MatTableDataSource<CancionAlbumResponse>();
 
@@ -41,6 +50,10 @@ export class AlbumCancion implements OnInit, AfterViewInit {
   puedeEditarAlbum = false;
   //#endregion Permisos
 
+  cancionActiva: CancionAlbumResponse | null = null;
+  spotifyActivo: string | null = null;
+  urlSpotify: SafeResourceUrl | null = null;
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -52,6 +65,8 @@ export class AlbumCancion implements OnInit, AfterViewInit {
     private reportes: ReportesService,
     private navigationService: NavigationService,
     private cdr: ChangeDetectorRef,
+
+    private sanitizer: DomSanitizer,
   ) {}
 
   ngOnInit(): void {
@@ -138,4 +153,31 @@ export class AlbumCancion implements OnInit, AfterViewInit {
   regresar() {
     this.navigationService.goBack();
   }
+
+  //#region Spotify
+  ids(c: CancionAlbumResponse): string[] {
+    return (c.spotifyId ?? '').split(',');
+  }
+
+  reproducir(c: CancionAlbumResponse, id: string) {
+    if (!id) return;
+
+    if (this.spotifyActivo === id) {
+      this.cerrarReproductor();
+      return;
+    }
+
+    this.cancionActiva = c;
+    this.spotifyActivo = id;
+    this.urlSpotify = this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://open.spotify.com/embed/track/${id}`,
+    );
+  }
+
+  cerrarReproductor() {
+    this.cancionActiva = null;
+    this.spotifyActivo = null;
+    this.urlSpotify = null;
+  }
+  //#endregion Spotify
 }

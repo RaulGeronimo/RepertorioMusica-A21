@@ -17,6 +17,9 @@ import { formatearFechaInput } from '@shared/utils/date.utils';
 import { FormValidationUtils } from '@shared/utils/form-validation.utils';
 import { HttpErrorResponse } from '@angular/common/http';
 
+import { SpotifyTrack } from '@core/models/spotify-track';
+import { SpotifyService } from '@core/services/spotify.service';
+
 @Component({
   selector: 'app-cancion-form',
   standalone: false,
@@ -34,6 +37,8 @@ export class CancionForm implements OnInit {
     genero: '',
     interpretacionId: 3,
     grupoId: 0,
+    colaboracion: '',
+    spotifyId: '',
   };
 
   edit: boolean = false;
@@ -42,6 +47,9 @@ export class CancionForm implements OnInit {
   interpretaciones: InterpretacionResponse[] = [];
 
   search: any;
+
+  resultadosSpotify: SpotifyTrack[] = [];
+  buscandoSpotify = false;
 
   constructor(
     private service: CancionService,
@@ -53,6 +61,8 @@ export class CancionForm implements OnInit {
     private catalogosService: CatalogosService,
     private grupoService: GrupoService,
     private cdr: ChangeDetectorRef,
+
+    private spotifyService: SpotifyService,
   ) {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
@@ -63,7 +73,9 @@ export class CancionForm implements OnInit {
         this.cancion.interpretacionId || 0,
         [Validators.required, noCeroValidator()],
       ],
+      colaboracion: [''],
       grupoId: [this.cancion.grupoId || 0, [Validators.required, noCeroValidator()]],
+      spotifyId: ['', [Validators.pattern('^[A-Za-z0-9]{22}$')]],
     });
   }
 
@@ -221,4 +233,38 @@ export class CancionForm implements OnInit {
     );
   }
   //#endregion Error Msj
+
+  //#region Spotify
+  buscarSpotify() {
+    const nombre = this.form.get('nombre')?.value;
+    if (!nombre) return;
+    const grupo = this.getNombreGrupo(this.form.get('grupoId')?.value) ?? '';
+
+    this.buscandoSpotify = true;
+    this.spotifyService.buscar(`${nombre} ${grupo}`.trim()).subscribe({
+      next: (res) => {
+        this.resultadosSpotify = res;
+        this.buscandoSpotify = false;
+        if (res.length === 0) this.alerta.SinResultados();
+        this.cdr.markForCheck();
+      },
+      error: (err: unknown) => {
+        console.error(err);
+        this.buscandoSpotify = false;
+        this.alerta.errorServidor();
+      },
+    });
+  }
+
+  seleccionarSpotify(t: SpotifyTrack) {
+    this.form.patchValue({ spotifyId: t.id });
+    this.resultadosSpotify = [];
+  }
+
+  onSpotifyPegado() {
+    const ctrl = this.form.get('spotifyId');
+    const m = /track[\/:]([A-Za-z0-9]{22})/.exec(ctrl?.value ?? '');
+    if (m) ctrl?.setValue(m[1]);
+  }
+  //#endregion Spotify
 }

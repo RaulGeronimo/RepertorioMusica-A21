@@ -10,6 +10,7 @@ import { Seccion } from '@shared/enums/seccion';
 import { CancionAlbumService } from '@shared/services/cancion-album.service';
 import { ReportesService } from '@core/services/reportes.service';
 import { CancionAlbumResponse } from '@shared/models/cancion-album';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-cancion-album-list',
@@ -30,6 +31,7 @@ export class CancionAlbumList implements OnInit, AfterViewInit {
     'genero',
     'interpretacion',
     'grupo',
+    'reproducir',
     'acciones',
   ];
 
@@ -46,6 +48,9 @@ export class CancionAlbumList implements OnInit, AfterViewInit {
   puedeEliminarCancionAlbum = false;
   //#endregion Permisos
 
+  cancionActiva: CancionAlbumResponse | null = null;
+  urlSpotify: SafeResourceUrl | null = null;
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -54,6 +59,7 @@ export class CancionAlbumList implements OnInit, AfterViewInit {
     private alerta: AlertasService,
     public permiso: PermisosService,
     private reportes: ReportesService,
+    private sanitizer: DomSanitizer,
   ) {}
 
   ngOnInit(): void {
@@ -117,4 +123,25 @@ export class CancionAlbumList implements OnInit, AfterViewInit {
       this.reportes.descargarExcel(blob, this.archivo);
     });
   }
+
+  //#region Spotify
+  reproducir(c: CancionAlbumResponse) {
+    if (!c.spotifyId) return;
+
+    if (this.cancionActiva?.cancionAlbumId === c.cancionAlbumId) {
+      this.cerrarReproductor();
+      return;
+    }
+
+    this.cancionActiva = c;
+    this.urlSpotify = this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://open.spotify.com/embed/track/${c.spotifyId}`,
+    );
+  }
+
+  cerrarReproductor() {
+    this.cancionActiva = null;
+    this.urlSpotify = null;
+  }
+  //#endregion Spotify
 }

@@ -14,6 +14,7 @@ import { ReportesService } from '@core/services/reportes.service';
 import { GrupoResponse } from '@shared/models/grupo';
 import { CancionResponse } from '@shared/models/cancion';
 import { NavigationService } from '@core/services/navigation.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-grupo-cancion',
@@ -33,6 +34,7 @@ export class GrupoCancion implements OnInit, AfterViewInit {
     'publicacion',
     'genero',
     'interpretacion',
+    'reproducir',
     'acciones',
   ];
 
@@ -57,6 +59,9 @@ export class GrupoCancion implements OnInit, AfterViewInit {
   puedeEliminarCancion = false;
   //#endregion Permisos
 
+  cancionActiva: CancionResponse | null = null;
+  urlSpotify: SafeResourceUrl | null = null;
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -68,6 +73,7 @@ export class GrupoCancion implements OnInit, AfterViewInit {
     private reportes: ReportesService,
     private navigationService: NavigationService,
     private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer,
   ) {}
 
   ngOnInit(): void {
@@ -165,4 +171,25 @@ export class GrupoCancion implements OnInit, AfterViewInit {
   regresar() {
     this.navigationService.goBack();
   }
+
+  //#region Spotify
+  reproducir(c: CancionResponse) {
+    if (!c.spotifyId) return;
+
+    if (this.cancionActiva?.cancionId === c.cancionId) {
+      this.cerrarReproductor();
+      return;
+    }
+
+    this.cancionActiva = c;
+    this.urlSpotify = this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://open.spotify.com/embed/track/${c.spotifyId}`,
+    );
+  }
+
+  cerrarReproductor() {
+    this.cancionActiva = null;
+    this.urlSpotify = null;
+  }
+  //#endregion Spotify
 }

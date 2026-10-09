@@ -83,6 +83,14 @@
                             }
                         </div>
 
+                        <!-- Colaboración -->
+                        <div class="mb-3">
+                            <label for="colaboracion" class="form-label small fw-medium">Colaboración</label>
+                            <input type="text" id="colaboracion" formControlName="colaboracion"
+                                placeholder="Colaboración con la Canción:" class="form-control"
+                                [ngClass]="getValidationClasses('colaboracion')">
+                        </div>
+
                         <!-- Interpretación -->
                         <div class="mb-3">
                             <label for="interpretacionId" class="form-label small fw-medium">Interpretación</label>
@@ -102,6 +110,36 @@
                             }
                         </div>
 
+                        <!-- Spotify -->
+                        <div class="mb-3">
+                            <label for="spotifyId" class="form-label small fw-medium">Spotify</label>
+                            <div class="input-group">
+                                <input type="text" id="spotifyId" formControlName="spotifyId"
+                                    placeholder="Busca con el botón o pega el enlace de Spotify" class="form-control"
+                                    (input)="onSpotifyPegado()" [ngClass]="getValidationClasses('spotifyId')">
+                                <button type="button" class="btn btn-success" (click)="buscarSpotify()"
+                                    [disabled]="!form.get('nombre')?.value || buscandoSpotify">
+                                    <i class="fa-brands fa-spotify"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+
+                        @if (resultadosSpotify.length) {
+                        <div class="list-group mb-3">
+                            @for (t of resultadosSpotify; track t.id) {
+                            <button type="button"
+                                class="list-group-item list-group-item-action d-flex align-items-center gap-2"
+                                (click)="seleccionarSpotify(t)">
+                                <img [src]="t.portada" width="40" height="40" alt="">
+                                <div class="text-start">
+                                    <div>{{ t.nombre }} <small class="text-muted">({{ t.duracion }})</small></div>
+                                    <small class="text-muted">{{ t.artista }} · {{ t.album }}</small>
+                                </div>
+                            </button>
+                            }
+                        </div>
+                        }
+
                         <!-- Botones -->
                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                             <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
@@ -117,7 +155,7 @@
                 <div class="card-body text-center sticky-preview">
                     <img [src]="getImagenGrupo(form.get('grupoId')?.value) || '/images/noImagen.png'"
                         class="card-img-top mb-3" appImages>
-                    
+
                     <h3 class="text-uppercase">
                         {{cancion.cancionId}} - {{form.get('nombre')?.value ||'Nombre de la Canción'}}
                     </h3>
@@ -125,7 +163,7 @@
                     <p>{{ form.get('duracion')?.value || 'Duración' }}</p>
                     <p>{{(form.get('publicacion')?.value | date: 'dd / MMMM / yyyy') ||'Fecha Publicación'}}</p>
                     <p>{{ form.get('genero')?.value || 'Género' }}</p>
-                    <!-- <p>{{getNombreGrupo(form.get('grupoId')?.value)|| 'Nombre del Grupo'}}</p> -->
+                    <p>{{ form.get('colaboracion')?.value || 'Con colaboración' }}</p>
                     <p>{{getNombreInterpretacion(form.get('interpretacionId')?.value)|| 'Tipo de Interpretación'}}</p>
                 </div>
             </div>

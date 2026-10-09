@@ -15,5 +15,6 @@ export interface CancionAlbumResponse {
   genero        : string;
   interpretacion: string;
   grupo         : string;
+  spotifyId     ?: string;
   totalRegistros: number;
 }
