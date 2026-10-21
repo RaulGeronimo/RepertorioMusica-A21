@@ -19,14 +19,14 @@
             <div class="offcanvas-header custom-offcanvas-header">
                 <img src="favicon.ico" alt="Logo" width="20" height="20" class="d-inline-block align-text-top">
                 <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">{{proyecto.nombre}}</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
             </div>
 
             <div class="offcanvas-body d-flex flex-column">
                 <ul class="navbar-nav flex-grow-1">
 
-                    <!-- Sección principal -->
+                    <!-- Sección principal: Grupos, Álbumes, Canciones, Disqueras, Instrumentos, Países -->
                     @for (item of navItemsPrincipal; track $index) {
                     <ng-container>
                         @if(puedeVerSeccion(item.seccion)){

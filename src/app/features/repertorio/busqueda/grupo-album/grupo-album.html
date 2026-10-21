@@ -58,10 +58,10 @@
     </app-export-button>
 </div>
 
-<div class="container-scroll mt-4 d-flex flex-column">
+<div class="container-scroll mt-3 d-flex flex-column pb-3">
     <!-- Datos del Grupo -->
     @if(grupo){
-    <div class="row y-3 flex-shrink-0">
+    <div class="row gy-3 flex-shrink-0">
         <div class="col-md-5">
             <div class="card card-body text-center bg-dark">
                 <div class="box">
@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div class="col-md-7 margen">
+        <div class="col-md-7">
             <div class="card text-center">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span class="text-uppercase">{{grupo.nombre}}</span>
@@ -127,7 +127,7 @@
     </div>
     }
 
-    <div class="row mt-4" [hidden]="tabla">
+    <div class="row mt-3" [hidden]="tabla">
         @for (dato of albumes | customGlobalFilter:search; track dato.albumId){
         <div class="col-md-4 mb-4">
             <div class="card text-center">
@@ -193,7 +193,7 @@
         }
     </div>
 
-    <div class="table-view-wrapper mt-4" [hidden]="!tabla">
+    <div class="table-view-wrapper mt-3" [hidden]="!tabla">
         <div class="container-scroll">
             <div class="table-wrapper">
                 <table mat-table [dataSource]="dataSource" matSort>
@@ -275,7 +275,7 @@
             </div>
         </div>
 
-        <div class="paginator-container mt-2">
+        <div class="paginator-container">
             <mat-paginator [pageSize]="pageSize"></mat-paginator>
         </div>
     </div>

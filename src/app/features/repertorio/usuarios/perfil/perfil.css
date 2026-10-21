@@ -1,5 +1,5 @@
 .full-height {
-    min-height: 79vh;
+    min-height: 0;
     height: auto;
 }
 
@@ -54,14 +54,31 @@
     text-align: center;
 }
 
+/* Scroll interno de cada pestaña */
+.perfil-box,
+.stats-box,
+.permisos-box {
+    max-height: calc(100vh - 300px);
+    max-height: calc(100dvh - 300px);
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.2);
+}
+
+.permisos-box {
+    min-height: 200px;
+    overflow-x: auto;
+}
+
 /* Gráfica responsiva */
 .stats-box {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: auto;
 }
 
 .stats-box canvas {
@@ -94,7 +111,20 @@
     margin: 0 auto;
 }
 
-.stats-box canvas {
-    width: 100% !important;
-    height: 100% !important;
+/* ----------------------------- */
+/* Celular                       */
+/* ----------------------------- */
+
+@media (max-width: 576px) {
+    .principal-card {
+        margin: 12px auto;
+        padding: 12px;
+    }
+
+    .perfil-box,
+    .stats-box,
+    .permisos-box {
+        max-height: calc(100vh - 240px);
+        max-height: calc(100dvh - 240px);
+    }
 }

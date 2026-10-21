@@ -1,6 +1,5 @@
-<div
-    class="d-flex flex-column align-items-center justify-content-center px-3 py-5 mx-auto vh-100 overflow-y-auto bg-body-secondary">
-    <div class="card w-100 shadow-lg" style="max-width: 36rem;">
+<div class="register-page bg-body-secondary">
+    <div class="card w-100 shadow-lg mx-auto my-auto" style="max-width: 36rem;">
         <div class="card-body p-4 p-sm-5">
             <div class="text-center mb-4">
                 <h2 class="fw-bold">Registrar usuario</h2>
@@ -99,7 +98,7 @@
                         </span>
                     </div>
                     @if(getError('password')){
-                    <div class="text-danger small mt-1">
+                    <div class="invalid-feedback d-block">
                         {{ getError('password') }}
                     </div>
                     }
@@ -121,9 +120,9 @@
                         </span>
                     </div>
                     @if(getPassword2Error()){
-                    <span class="d-block text-danger small mt-1">
+                    <div class="invalid-feedback d-block">
                         {{ getPassword2Error() }}
-                    </span>
+                    </div>
                     }
                 </div>
 

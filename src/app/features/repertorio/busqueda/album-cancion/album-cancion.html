@@ -46,10 +46,10 @@
     </app-export-button>
 </div>
 
-<div class="container-scroll mt-4 d-flex flex-column">
+<div class="container-scroll mt-3 d-flex flex-column pb-3">
     <!-- Datos del Álbum -->
     @if(album){
-    <div class="row y-3 flex-shrink-0">
+    <div class="row gy-3 flex-shrink-0">
         <div class="col-md-5">
             <div class="card card-body text-center bg-dark">
                 <div class="box">
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <div class="col-md-7 margen">
+        <div class="col-md-7">
             <div class="card text-center">
                 <div class="card-header text-uppercase">
                     {{album.grupo}}
@@ -146,7 +146,7 @@
             </div>
         </div>
 
-        <div class="paginator-container mt-2">
+        <div class="paginator-container">
             <mat-paginator [pageSize]="pageSize"></mat-paginator>
         </div>
     </div>
