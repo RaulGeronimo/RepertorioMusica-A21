@@ -87,6 +87,8 @@ import { GrupoAlbum } from './features/repertorio/busqueda/grupo-album/grupo-alb
 import { GrupoArtista } from './features/repertorio/busqueda/grupo-artista/grupo-artista';
 import { GrupoCancion } from './features/repertorio/busqueda/grupo-cancion/grupo-cancion';
 import { AlbumCancion } from './features/repertorio/busqueda/album-cancion/album-cancion';
+import { QrAcceso } from './shared/components/qr-acceso/qr-acceso';
+import { QrScanner } from './shared/components/qr-scanner/qr-scanner';
 //#endregion CRUD
 
 @NgModule({
@@ -132,6 +134,8 @@ import { AlbumCancion } from './features/repertorio/busqueda/album-cancion/album
     GrupoArtista,
     GrupoCancion,
     AlbumCancion,
+    QrAcceso,
+    QrScanner,
   ],
   imports: [
     BrowserModule,

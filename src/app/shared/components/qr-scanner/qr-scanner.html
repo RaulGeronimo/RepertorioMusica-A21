@@ -1,0 +1,18 @@
+<div class="position-relative mx-auto rounded overflow-hidden bg-dark" style="max-width: 320px; aspect-ratio: 1 / 1;">
+    <video #video class="w-100 h-100" style="object-fit: cover;" muted playsinline></video>
+
+    @if (iniciando && !error) {
+    <div class="position-absolute top-50 start-50 translate-middle text-white small">
+        Iniciando cámara...
+    </div>
+    }
+</div>
+
+@if (error) {
+<div class="alert alert-warning small mt-3 mb-0">
+    {{ error }}
+    <div class="mt-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="iniciar()">Reintentar</button>
+    </div>
+</div>
+}

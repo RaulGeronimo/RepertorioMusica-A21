@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Permiso } from '@core/models/permiso';
 import { Usuario } from '@core/models/usuario';
 import { environment } from '@environments/environment';
-import { interval, Observable, Subscription } from 'rxjs';
+import { firstValueFrom, interval, Observable, Subscription } from 'rxjs';
 import { AlertasService } from './alertas.service';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
@@ -12,13 +12,24 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   expiraEn: string;
+  mantenerSesion: boolean;
   permisos: Permiso[];
 }
+
+export interface QrGenerarResponse {
+  contenido: string;
+  segundos: number;
+}
+
+export type ResultadoRenovacion = 'ok' | 'invalida' | 'red';
 
 interface JwtPayload {
   Usuario: string;
   Permisos: string[];
 }
+
+const RENOVAR_ANTES_MS = 2 * 60 * 1000;
+const REINTENTO_RED_MS = 15 * 1000;
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +37,8 @@ interface JwtPayload {
 export class AuthService {
   API_URI = `${environment.apiUrl}/Auth`;
   private tokenCheckInterval: Subscription | null = null;
+  private renovacionEnCurso: Promise<ResultadoRenovacion> | null = null;
+  private proximoIntento = 0;
 
   constructor(
     private http: HttpClient,
@@ -56,16 +69,32 @@ export class AuthService {
     return this.http.post(`${this.API_URI}`, user);
   }
 
-  login(user: Usuario): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.API_URI}/login`, user);
+  login(user: Usuario, mantenerSesion: boolean = false): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.API_URI}/login`, { ...user, mantenerSesion });
   }
+
+  //#region QR
+  generarQr(): Observable<QrGenerarResponse> {
+    return this.http.post<QrGenerarResponse>(`${this.API_URI}/qr/generar`, {});
+  }
+
+  loginConQr(contenido: string, mantenerSesion: boolean = false): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.API_URI}/qr/login`, { contenido, mantenerSesion });
+  }
+  //#endregion QR
 
   //#region Metodos
   logout() {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
+      this.http.post(`${this.API_URI}/logout`, { refreshToken }).subscribe({ error: () => {} });
+    }
+
     // localStorage.clear();
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('expiraEn');
+    localStorage.removeItem('mantenerSesion');
 
     if (this.tokenCheckInterval) {
       this.tokenCheckInterval.unsubscribe();
@@ -74,15 +103,36 @@ export class AuthService {
     this.router.navigate(['login']);
   }
 
-  guardarTokens(accessToken: string, refreshToken: string, expiraEn: string) {
+  cerrarSesionInvalida() {
+    this.logout();
+    this.alerta.mostrarAlertaSimple(
+      'Sesión finalizada',
+      'Tu sesión ya no es válida. Inicia sesión nuevamente.',
+      'info',
+    );
+  }
+
+  guardarTokens(
+    accessToken: string,
+    refreshToken: string,
+    expiraEn: string,
+    mantenerSesion?: boolean,
+  ) {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('expiraEn', expiraEn);
+    if (mantenerSesion !== undefined) {
+      localStorage.setItem('mantenerSesion', mantenerSesion ? '1' : '0');
+    }
     this.iniciarChequeoExpiracion();
   }
 
   obtenerToken(): string | null {
     return localStorage.getItem('accessToken');
+  }
+
+  mantenerSesion(): boolean {
+    return localStorage.getItem('mantenerSesion') === '1';
   }
 
   estaAutenticado(): boolean {
@@ -143,11 +193,22 @@ export class AuthService {
       const ahora = new Date().getTime();
       const diferencia = expiracion - ahora;
 
+      if (this.mantenerSesion()) {
+        if (
+          diferencia <= RENOVAR_ANTES_MS &&
+          !this.renovacionEnCurso &&
+          ahora >= this.proximoIntento
+        ) {
+          this.renovarEnSegundoPlano();
+        }
+        return;
+      }
+
       if (diferencia <= 0) {
         this.logout();
         this.alerta.mostrarAlertaSimple('Sesión Expirada', 'Tu sesión ha terminado.', 'info');
       } else if (diferencia <= 5000) {
-        this.tokenCheckInterval?.unsubscribe(); // Evita múltiples alertas
+        this.tokenCheckInterval?.unsubscribe();
         this.mostrarAlertaRenovacion();
       }
     });
@@ -170,39 +231,61 @@ export class AuthService {
       });
   }
 
-  private renovarToken() {
-    const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
+  private async renovarToken() {
+    const resultado = await this.renovarSesion();
 
-    if (!accessToken || !refreshToken) {
+    if (resultado === 'ok') {
+      this.alerta.mostrarAlertaSimple('Sesión renovada', 'Tu sesión ha sido extendida.', 'success');
+      this.iniciarChequeoExpiracion();
+    } else {
       this.logout();
-      return;
+      this.alerta.mostrarAlertaSimple('Sesión finalizada', 'No se pudo renovar el token.', 'error');
     }
+  }
 
-    this.http
-      .post<LoginResponse>(`${this.API_URI}/refresh-token`, {
-        accessToken,
-        refreshToken,
-      })
-      .subscribe({
-        next: (res) => {
-          this.guardarTokens(res.accessToken, res.refreshToken, res.expiraEn);
-          this.alerta.mostrarAlertaSimple(
-            'Sesión renovada',
-            'Tu sesión ha sido extendida.',
-            'success',
-          );
-          this.iniciarChequeoExpiracion();
-        },
-        error: () => {
-          this.logout();
-          this.alerta.mostrarAlertaSimple(
-            'Sesión finalizada',
-            'No se pudo renovar el token.',
-            'error',
-          );
-        },
+  private async renovarEnSegundoPlano() {
+    const resultado = await this.renovarSesion();
+
+    if (resultado === 'invalida') {
+      this.cerrarSesionInvalida();
+    } else if (resultado === 'red') {
+      this.proximoIntento = Date.now() + REINTENTO_RED_MS;
+    }
+  }
+
+  renovarSesion(): Promise<ResultadoRenovacion> {
+    if (!this.renovacionEnCurso) {
+      this.renovacionEnCurso = this.ejecutarRenovacion().finally(() => {
+        this.renovacionEnCurso = null;
       });
+    }
+    return this.renovacionEnCurso;
+  }
+
+  private async ejecutarRenovacion(): Promise<ResultadoRenovacion> {
+    const refreshEnviado = localStorage.getItem('refreshToken');
+    if (!refreshEnviado) return 'invalida';
+
+    const renovar = async (): Promise<ResultadoRenovacion> => {
+      if (localStorage.getItem('refreshToken') !== refreshEnviado) return 'ok';
+
+      try {
+        const res = await firstValueFrom(
+          this.http.post<LoginResponse>(`${this.API_URI}/refresh-token`, {
+            refreshToken: refreshEnviado,
+          }),
+        );
+        this.guardarTokens(res.accessToken, res.refreshToken, res.expiraEn, res.mantenerSesion);
+        return 'ok';
+      } catch (error) {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          return localStorage.getItem('refreshToken') !== refreshEnviado ? 'ok' : 'invalida';
+        }
+        return 'red';
+      }
+    };
+
+    return 'locks' in navigator ? navigator.locks.request('renovar-sesion', renovar) : renovar();
   }
 
   private verificarExpiracionInicial() {
@@ -212,7 +295,7 @@ export class AuthService {
     const expiracion = new Date(expiraEn).getTime();
     const ahora = new Date().getTime();
 
-    if (expiracion <= ahora) {
+    if (expiracion <= ahora && !this.mantenerSesion()) {
       this.logout();
       this.alerta.mostrarAlertaSimple(
         'Sesión expirada',

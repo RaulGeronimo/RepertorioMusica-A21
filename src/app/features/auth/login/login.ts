@@ -1,10 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Usuario } from '@core/models/usuario';
 import { AlertasService } from '@core/services/alertas.service';
-import { AuthService } from '@core/services/auth.service';
+import { AuthService, LoginResponse } from '@core/services/auth.service';
 import { FormValidationUtils } from '@shared/utils/form-validation.utils';
 
 @Component({
@@ -16,6 +16,9 @@ import { FormValidationUtils } from '@shared/utils/form-validation.utils';
 export class Login implements OnInit {
   fieldTextType: boolean = false;
   form: FormGroup;
+
+  modo: 'credenciales' | 'qr' = 'credenciales';
+  procesandoQr = signal(false);
 
   usuario: Usuario = {
     usuarioId: 0,
@@ -45,23 +48,48 @@ export class Login implements OnInit {
     this.form = this.fb.group({
       usuario: ['', Validators.required],
       password: ['', Validators.required],
+      mantenerSesion: [false],
     });
   }
 
+  get mantenerControl(): FormControl {
+    return this.form.get('mantenerSesion') as FormControl;
+  }
+
+  cambiarModo(modo: 'credenciales' | 'qr') {
+    this.modo = modo;
+  }
+
   iniciarSesion() {
-    const request: Usuario = { ...this.usuario, ...this.form.value };
+    const { mantenerSesion, ...credenciales } = this.form.value;
+    const request: Usuario = { ...this.usuario, ...credenciales };
 
-    this.service.login(request).subscribe({
-      next: (res) => {
-        this.service.guardarTokens(res.accessToken, res.refreshToken, res.expiraEn);
-
-        this.router.navigate(['repertorio/']);
-        this.alerta.successtroast(`Bienvenido '${request.usuario}'`, 'Usuario Logeado');
-      },
+    this.service.login(request, !!mantenerSesion).subscribe({
+      next: (res) => this.sesionIniciada(res, request.usuario),
       error: (err: HttpErrorResponse) => {
         this.alerta.manejarError(err, 'Error de autenticación');
       },
     });
+  }
+
+  iniciarSesionConQr(contenido: string) {
+    this.procesandoQr.set(true);
+
+    this.service.loginConQr(contenido, !!this.mantenerControl.value).subscribe({
+      next: (res) => this.sesionIniciada(res),
+      error: (err: HttpErrorResponse) => {
+        this.alerta.manejarError(err, 'Error de autenticación');
+        this.procesandoQr.set(false);
+      },
+    });
+  }
+
+  private sesionIniciada(res: LoginResponse, nombreUsuario?: string) {
+    this.service.guardarTokens(res.accessToken, res.refreshToken, res.expiraEn, res.mantenerSesion);
+
+    const nombre = nombreUsuario || this.service.obtenerDatosUsuario()?.usuario || '';
+    this.router.navigate(['repertorio/']);
+    this.alerta.successtroast(`Bienvenido '${nombre}'`, 'Usuario Logeado');
   }
 
   toggleFieldTextType() {

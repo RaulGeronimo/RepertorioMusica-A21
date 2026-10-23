@@ -1,0 +1,32 @@
+<div class="card shadow-sm">
+    <div class="card-body text-center p-4">
+        <h5 class="card-title fw-bold mb-1"><i class="fas fa-qrcode me-2"></i>Iniciar sesión en otro dispositivo</h5>
+        <p class="text-muted small">
+            Genera un código QR y escanéalo desde la pantalla de inicio de sesión del otro dispositivo.
+            Es de un solo uso y expira en poco tiempo.
+        </p>
+
+        @if (qrImagen()) {
+        <img [src]="qrImagen()" width="260" height="260" alt="Código QR para iniciar sesión"
+            class="img-fluid rounded border mb-2" />
+        <p class="small mb-2" [class.text-danger]="segundosRestantes() <= 10">
+            Expira en <strong>{{ segundosRestantes() }}</strong> s
+        </p>
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="ocultar()">Ocultar</button>
+        <p class="text-muted small mt-3 mb-0">
+            <i class="fas fa-triangle-exclamation me-1"></i>No muestres ni compartas este código: quien lo escanee entra
+            a tu cuenta.
+        </p>
+        } @else {
+        @if (expirado()) {
+        <p class="text-warning small">El código expiró.</p>
+        }
+        <button type="button" class="btn btn-outline-success" [disabled]="cargando()" (click)="generar()">
+            @if (cargando()) {
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            }
+            {{ expirado() ? 'Generar nuevo código' : 'Generar código QR' }}
+        </button>
+        }
+    </div>
+</div>

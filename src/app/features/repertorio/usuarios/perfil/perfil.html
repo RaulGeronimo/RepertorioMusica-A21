@@ -1,108 +1,116 @@
 <div class="full-height">
-    <div class="principal-card">
-        <mat-tab-group class="custom-tab-group">
+  <div class="principal-card">
+    <mat-tab-group class="custom-tab-group">
 
-            <!-- PERFIL -->
-            <mat-tab label="Perfil">
-                <div class="tab-content-container">
-                    <div class="perfil-box">
-                        <div class="text-center">
-                            <h4>{{ perfil().nombreCompleto }}</h4>
-                            <p class="text-muted">Usuario: {{ perfil().usuario }}</p>
-                            <p class="text-muted">Correo: {{ perfil().correo }}</p>
-                        </div>
-                        <hr />
-                        <div>
-                            <p><strong>Rol:</strong> {{ perfil().rol }}</p>
-                            <p><strong>Edad:</strong> {{ perfil().edad }} años</p>
-                            <p><strong>Estado: </strong>
-                                <span class="badge" [ngClass]="perfil().activo ? 'bg-success' : 'bg-danger'">
-                                    {{ perfil().activo ? 'Activo' : 'Inactivo' }}
-                                </span>
-                            </p>
-                            <p><strong>Fecha Nacimiento:</strong> {{ perfil().fechaNacimiento | date: 'dd / MMMM / yyyy'
-                                }}</p>
-                            <p><strong>Registro:</strong> {{ perfil().registro | date: 'dd / MMMM / yyyy h:mm:ss a' }}
-                            </p>
-                            <p><strong>Cumpleaños:</strong> {{ perfil().diasCumple }}</p>
-                        </div>
-                    </div>
-                </div>
-            </mat-tab>
+      <!-- PERFIL -->
+      <mat-tab label="Perfil">
+        <div class="tab-content-container">
+          <div class="perfil-box">
+            <div class="text-center">
+              <h4>{{ perfil().nombreCompleto }}</h4>
+              <p class="text-muted">Usuario: {{ perfil().usuario }}</p>
+              <p class="text-muted">Correo: {{ perfil().correo }}</p>
+            </div>
+            <hr />
+            <div>
+              <p><strong>Rol:</strong> {{ perfil().rol }}</p>
+              <p><strong>Edad:</strong> {{ perfil().edad }} años</p>
+              <p><strong>Estado: </strong>
+                <span class="badge" [ngClass]="perfil().activo ? 'bg-success' : 'bg-danger'">
+                  {{ perfil().activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </p>
+              <p><strong>Fecha Nacimiento:</strong> {{ perfil().fechaNacimiento | date: 'dd / MMMM / yyyy'
+                }}</p>
+              <p><strong>Registro:</strong> {{ perfil().registro | date: 'dd / MMMM / yyyy h:mm:ss a' }}
+              </p>
+              <p><strong>Cumpleaños:</strong> {{ perfil().diasCumple }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
 
-            <!-- ESTADÍSTICAS -->
-            <mat-tab label="Estadísticas">
-                <div class="tab-content-container">
-                    <div class="stats-box">
-                        <h5>Actividad</h5>
-                        <div class="chart-holder">
-                            <canvas baseChart [data]="actividadChart()" [type]="'doughnut'"
-                                [options]="actividadChartOptions()"></canvas>
-                        </div>
-                        <div class="mt-3 text-center">
-                            <p><strong>Total Correctos:</strong> {{ totalCorrectos() }}</p>
-                            <p><strong>Total Errores:</strong> {{ totalError() }}</p>
-                        </div>
-                    </div>
-                </div>
-            </mat-tab>
+      <!-- ESTADÍSTICAS -->
+      <mat-tab label="Estadísticas">
+        <div class="tab-content-container">
+          <div class="stats-box">
+            <h5>Actividad</h5>
+            <div class="chart-holder">
+              <canvas baseChart [data]="actividadChart()" [type]="'doughnut'"
+                [options]="actividadChartOptions()"></canvas>
+            </div>
+            <div class="mt-3 text-center">
+              <p><strong>Total Correctos:</strong> {{ totalCorrectos() }}</p>
+              <p><strong>Total Errores:</strong> {{ totalError() }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
 
-            <!-- MOVIMIENTOS -->
-            <mat-tab label="Movimientos">
-                <div class="tab-content-container">
-                    <div class="stats-box">
-                        <h5>Movimientos realizados</h5>
-                        <div class="chart-holder">
-                            <canvas baseChart [data]="movimientosChart()" [type]="'doughnut'"
-                                [options]="movimientosChartOptions()">
-                            </canvas>
-                        </div>
-                        <div class="mt-3 text-center">
-                            <p><strong>Total Agregados:</strong> {{ totalAgregados() }}</p>
-                            <p><strong>Total Actualizados:</strong> {{ totalActualizados() }}</p>
-                            <p><strong>Total Eliminados:</strong> {{ totalEliminados() }}</p>
-                        </div>
-                    </div>
-                </div>
-            </mat-tab>
+      <!-- MOVIMIENTOS -->
+      <mat-tab label="Movimientos">
+        <div class="tab-content-container">
+          <div class="stats-box">
+            <h5>Movimientos realizados</h5>
+            <div class="chart-holder">
+              <canvas baseChart [data]="movimientosChart()" [type]="'doughnut'" [options]="movimientosChartOptions()">
+              </canvas>
+            </div>
+            <div class="mt-3 text-center">
+              <p><strong>Total Agregados:</strong> {{ totalAgregados() }}</p>
+              <p><strong>Total Actualizados:</strong> {{ totalActualizados() }}</p>
+              <p><strong>Total Eliminados:</strong> {{ totalEliminados() }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
 
-            <!-- PERMISOS -->
-            <mat-tab label="Permisos">
-                <div class="tab-content-container">
-                    <div class="permisos-box">
-                        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100">
-                            <ng-container matColumnDef="seccion">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Sección</th>
-                                <td mat-cell *matCellDef="let perm">{{ perm.seccion }}</td>
-                            </ng-container>
+      <!-- PERMISOS -->
+      <mat-tab label="Permisos">
+        <div class="tab-content-container">
+          <div class="permisos-box">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100">
+              <ng-container matColumnDef="seccion">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Sección</th>
+                <td mat-cell *matCellDef="let perm">{{ perm.seccion }}</td>
+              </ng-container>
 
-                            <ng-container matColumnDef="crear">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Crear</th>
-                                <td mat-cell *matCellDef="let perm">{{ perm.puedeCrear ? '✔️' : '❌' }}</td>
-                            </ng-container>
+              <ng-container matColumnDef="crear">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Crear</th>
+                <td mat-cell *matCellDef="let perm">{{ perm.puedeCrear ? '✔️' : '❌' }}</td>
+              </ng-container>
 
-                            <ng-container matColumnDef="editar">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Editar</th>
-                                <td mat-cell *matCellDef="let perm">{{ perm.puedeEditar ? '✔️' : '❌' }}</td>
-                            </ng-container>
+              <ng-container matColumnDef="editar">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Editar</th>
+                <td mat-cell *matCellDef="let perm">{{ perm.puedeEditar ? '✔️' : '❌' }}</td>
+              </ng-container>
 
-                            <ng-container matColumnDef="eliminar">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Eliminar</th>
-                                <td mat-cell *matCellDef="let perm">{{ perm.puedeEliminar ? '✔️' : '❌' }}</td>
-                            </ng-container>
+              <ng-container matColumnDef="eliminar">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Eliminar</th>
+                <td mat-cell *matCellDef="let perm">{{ perm.puedeEliminar ? '✔️' : '❌' }}</td>
+              </ng-container>
 
-                            <ng-container matColumnDef="ver">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Ver</th>
-                                <td mat-cell *matCellDef="let perm">{{ perm.puedeVer ? '✔️' : '❌' }}</td>
-                            </ng-container>
+              <ng-container matColumnDef="ver">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Ver</th>
+                <td mat-cell *matCellDef="let perm">{{ perm.puedeVer ? '✔️' : '❌' }}</td>
+              </ng-container>
 
-                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                        </table>
-                    </div>
-                </div>
-            </mat-tab>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+        </div>
+      </mat-tab>
 
-        </mat-tab-group>
-    </div>
+      <!-- ACCESO QR -->
+      <mat-tab label="Acceso QR">
+        <div class="tab-content-container">
+          <div class="perfil-box">
+            <app-qr-acceso />
+          </div>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
 </div>
