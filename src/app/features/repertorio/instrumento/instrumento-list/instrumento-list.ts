@@ -109,9 +109,12 @@ export class InstrumentoList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.archivo);
-    this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.archivo);
+    this.service.exportarExcel().subscribe({
+      next: (blob) => {
+        this.reportes.descargarExcel(blob, this.archivo);
+        this.alerta.reporte(this.archivo);
+      },
+      error: (err) => this.alerta.errorReporte(err, (e) => this.reportes.leerErrorBlob(e)),
     });
   }
 }

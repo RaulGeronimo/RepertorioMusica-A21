@@ -20,7 +20,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class CancionAlbumList implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  archivo: string = 'Canciones';
+  archivo: string = 'Canciones Album';
   displayedColumns: string[] = [
     'cancionAlbumId',
     'cancion',
@@ -118,9 +118,12 @@ export class CancionAlbumList implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.archivo);
-    this.service.exportarExcel().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.archivo);
+    this.service.exportarExcel().subscribe({
+      next: (blob) => {
+        this.reportes.descargarExcel(blob, this.archivo);
+        this.alerta.reporte(this.archivo);
+      },
+      error: (err) => this.alerta.errorReporte(err, (e) => this.reportes.leerErrorBlob(e)),
     });
   }
 

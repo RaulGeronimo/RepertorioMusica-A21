@@ -33,6 +33,6 @@ export class BitacoraService {
   }
 
   exportarExcelError(): Observable<Blob> {
-    return this.http.get(`${this.API_URL}/Errpr/Exportar`, { responseType: 'blob' });
+    return this.http.get(`${this.API_URL}/Error/Exportar`, { responseType: 'blob' });
   }
 }

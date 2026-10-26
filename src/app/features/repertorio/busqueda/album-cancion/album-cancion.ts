@@ -25,7 +25,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class AlbumCancion implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  archivo: string = 'Canciones';
+  archivo: string = '';
 
   displayedColumns: string[] = [
     'numero',
@@ -103,6 +103,8 @@ export class AlbumCancion implements OnInit, AfterViewInit {
           `Canciones del álbum '${this.album.nombre}'`,
           'Lista de Canciones',
         );
+        this.archivo = this.album.nombre;
+
         this.cdr.markForCheck();
       },
       error: (err: unknown) => {
@@ -144,9 +146,12 @@ export class AlbumCancion implements OnInit, AfterViewInit {
   export() {
     const params = this.activatedRoute.snapshot.params;
 
-    this.alerta.reporte(this.archivo);
-    this.service.exportarExcelAlbum(params['id']).subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.archivo);
+    this.service.exportarExcelAlbum(params['id']).subscribe({
+      next: (blob) => {
+        this.reportes.descargarExcel(blob, this.archivo);
+        this.alerta.reporte(this.archivo);
+      },
+      error: (err) => this.alerta.errorReporte(err, (e) => this.reportes.leerErrorBlob(e)),
     });
   }
 

@@ -96,7 +96,7 @@ export class Navigation implements OnInit {
       items: [
         { nombre: 'Lista', routerLink: ['grupo'] },
         {
-          nombre: 'Integrantes',
+          nombre: 'Integrantes por Grupo',
           routerLink: ['artistaGrupo'],
           seccion: Seccion.ArtistaGrupo,
           accion: 'ver',

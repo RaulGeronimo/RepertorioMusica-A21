@@ -23,7 +23,7 @@ import { NavigationService } from '@core/services/navigation.service';
 })
 export class GrupoArtista implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  archivo: string = 'Artistas';
+  archivo: string = '';
 
   displayedColumns: string[] = [
     'artistaGrupoId',
@@ -126,6 +126,8 @@ export class GrupoArtista implements OnInit, AfterViewInit {
           `Integrantes del grupo '${this.grupo.nombre}'`,
           'Lista de Integrantes',
         );
+        this.archivo = this.grupo.nombre;
+
         this.cdr.markForCheck();
       },
       error: (err: unknown) => {
@@ -181,9 +183,12 @@ export class GrupoArtista implements OnInit, AfterViewInit {
   export() {
     const params = this.activatedRoute.snapshot.params;
 
-    this.alerta.reporte(this.archivo);
-    this.service.exportarExcelAlbum(params['id']).subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.archivo);
+    this.service.exportarExcelGrupo(params['id']).subscribe({
+      next: (blob) => {
+        this.reportes.descargarExcel(blob, this.archivo);
+        this.alerta.reporte(this.archivo);
+      },
+      error: (err) => this.alerta.errorReporte(err, (e) => this.reportes.leerErrorBlob(e)),
     });
   }
 

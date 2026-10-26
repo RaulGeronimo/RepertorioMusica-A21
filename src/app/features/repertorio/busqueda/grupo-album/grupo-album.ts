@@ -23,7 +23,7 @@ import { NavigationService } from '@core/services/navigation.service';
 })
 export class GrupoAlbum implements OnInit, AfterViewInit {
   pageSize: number = environment.registrosPagina;
-  archivo: string = 'Álbumes';
+  archivo: string = '';
 
   displayedColumns: string[] = [
     'albumId',
@@ -114,6 +114,8 @@ export class GrupoAlbum implements OnInit, AfterViewInit {
       next: (res) => {
         this.grupo = res;
         this.alerta.successtroast(`Álbumes del grupo '${this.grupo.nombre}'`, 'Lista de Álbumes');
+        this.archivo = this.grupo.nombre;
+
         this.cdr.markForCheck();
       },
       error: (err: unknown) => {
@@ -169,9 +171,12 @@ export class GrupoAlbum implements OnInit, AfterViewInit {
   export() {
     const params = this.activatedRoute.snapshot.params;
 
-    this.alerta.reporte(this.archivo);
-    this.service.exportarExcelAlbum(params['id']).subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.archivo);
+    this.service.exportarExcelGrupo(params['id']).subscribe({
+      next: (blob) => {
+        this.reportes.descargarExcel(blob, this.archivo);
+        this.alerta.reporte(this.archivo);
+      },
+      error: (err) => this.alerta.errorReporte(err, (e) => this.reportes.leerErrorBlob(e)),
     });
   }
 

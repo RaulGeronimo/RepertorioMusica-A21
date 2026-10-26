@@ -90,9 +90,12 @@ export class BitacoraError implements OnInit, AfterViewInit {
   }
 
   export() {
-    this.alerta.reporte(this.archivo);
-    this.service.exportarExcelError().subscribe((blob) => {
-      this.reportes.descargarExcel(blob, this.archivo);
+    this.service.exportarExcelError().subscribe({
+      next: (blob) => {
+        this.reportes.descargarExcel(blob, this.archivo);
+        this.alerta.reporte(this.archivo);
+      },
+      error: (err) => this.alerta.errorReporte(err, (e) => this.reportes.leerErrorBlob(e)),
     });
   }
 }

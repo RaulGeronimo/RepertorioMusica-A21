@@ -266,6 +266,7 @@ export class AlertasService {
   }
   //#endregion Troast
 
+  //#region Reportes
   public reporte(archivo: string) {
     Swal.fire({
       title: 'Reporte Generado Correctamente',
@@ -273,22 +274,32 @@ export class AlertasService {
       icon: 'success',
       showConfirmButton: false,
       timer: this.timeOut,
+      timerProgressBar: true,
       showClass: {
-        popup: `
-            animate__animated
-            animate__fadeInUp
-            animate__faster
-          `,
+        popup: `animate__animated animate__fadeInUp animate__faster`,
       },
       hideClass: {
-        popup: `
-            animate__animated
-            animate__fadeOutDown
-            animate__faster
-          `,
+        popup: `animate__animated animate__fadeOutDown animate__faster`,
       },
     });
   }
+
+  public async errorReporte(err: HttpErrorResponse, leerMensaje: (e: any) => Promise<string>) {
+    if (err.status === 404) {
+      this.SinResultados();
+      return;
+    }
+
+    if (err.status === 400 || err.status === 401) {
+      const mensaje = await leerMensaje(err);
+      this.warning('No se pudo generar el reporte', mensaje);
+      return;
+    }
+
+    console.error(err);
+    this.errorServidor();
+  }
+  //#endregion Reportes
 
   //#region Pais
   public borrarPais(id: number, callback: () => void) {
